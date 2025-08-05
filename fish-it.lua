@@ -62,4 +62,56 @@ DevTab:AddButton({
     end
 })
 
--- The rest of the script here ...
+-- AUTO FISHING
+local autofish = false
+local perfectCast = false
+local autoRecastDelay = 0.5
+
+MainTab:AddToggle({
+    Name = "🎣 Enable Auto Fishing",
+    Default = false,
+    Callback = function(Value)
+        autofish = Value
+        if Value then
+            task.spawn(function()
+                while autofish do
+                    pcall(function()
+                        ReplicatedStorage.Packages._Index["sleitnick_net@0.2.0"].net["RE/EquipToolFromHotbar"]:FireServer(1)
+                        task.wait(0.1)
+                        local timestamp = perfectCast and 9999999999 or (tick() + math.random())
+                        ReplicatedStorage.Packages._Index["sleitnick_net@0.2.0"].net["RF/ChargeFishingRod"]:InvokeServer(timestamp)
+                        task.wait(0.1)
+                        local x = perfectCast and -1.238 or (math.random(-1000, 1000) / 1000)
+                        local y = perfectCast and 0.969 or (math.random(0, 1000) / 1000)
+                        ReplicatedStorage.Packages._Index["sleitnick_net@0.2.0"].net["RF/RequestFishingMinigameStarted"]:InvokeServer(x, y)
+                        task.wait(1.3)
+                        ReplicatedStorage.Packages._Index["sleitnick_net@0.2.0"].net["RE/FishingCompleted"]:FireServer()
+                    end)
+                    task.wait(autoRecastDelay)
+                end
+            end)
+        end
+    end
+})
+
+MainTab:AddToggle({
+    Name = "✨ Use Perfect Cast",
+    Default = false,
+    Callback = function(Value)
+        perfectCast = Value
+    end
+})
+
+MainTab:AddSlider({
+    Name = "⏱️ Auto Recast Delay (seconds)",
+    Min = 0.5,
+    Max = 5,
+    Default = autoRecastDelay,
+    Increment = 0.1,
+    Callback = function(Value)
+        autoRecastDelay = Value
+    end
+})
+
+-- (Fitur lain: Auto Sell, Spawn Boat, Buy Rod, Buy Weather, Buy Bait, Teleport, Event Scanner, Player Settings, Settings Tab, dll.)
+-- Diteruskan sama persis seperti script gabungan yang kita susun sebelumnya
