@@ -56,7 +56,7 @@ local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/Siri
 
 -- Create Window positioned like a LEFT SIDEBAR
 local Window = Rayfield:CreateWindow({
-    Name = "BANGCODE Fish It Pro v3.0",
+    Name = "BANGCODE Fish It Pro v1.0",
     LoadingTitle = "BANGCODE Fish It Pro Ultimate",
     LoadingSubtitle = "by BANGCODE - Ultimate Edition",
     Theme = "DarkBlue",
@@ -376,7 +376,7 @@ end
 -- ═══════════════════════════════════════════════════════════════
 
 InfoTab:CreateParagraph({
-    Title = "BANGCODE Fish It Pro Ultimate v3.0",
+    Title = "BANGCODE Fish It Pro Ultimate v1.0",
     Content = "The most advanced Fish It script ever created with AI-powered features, smart analytics, and premium automation systems.\n\nCreated by BANGCODE - Trusted by thousands of users worldwide!"
 })
 
@@ -1218,7 +1218,7 @@ UtilityTab:CreateButton({
 UtilityTab:CreateButton({ 
     Name = "Unload Ultimate Script", 
     Callback = CreateSafeCallback(function()
-        NotifyInfo("BANGCODE", "Thank you for using BANGCODE Fish It Pro Ultimate v3.0! The most advanced fishing script ever created.\n\nScript will unload in 3 seconds...")
+        NotifyInfo("BANGCODE", "Thank you for using BANGCODE Fish It Pro Ultimate v1.0! The most advanced fishing script ever created.\n\nScript will unload in 3 seconds...")
         task.wait(3)
         if game:GetService("CoreGui"):FindFirstChild("Rayfield") then
             game:GetService("CoreGui").Rayfield:Destroy()
@@ -1245,7 +1245,7 @@ end)
 -- Welcome Messages with Ultimate Features
 task.spawn(function()
     task.wait(2)
-    NotifySuccess("Welcome!", "BANGCODE Fish It Pro ULTIMATE v3.0 loaded successfully!\n\nULTIMATE FEATURES ACTIVATED:\nAI-Powered Analytics • Smart Automation • Advanced Safety • Premium Quality • And Much More!\n\nReady to dominate Fish It like never before!")
+    NotifySuccess("Welcome!", "BANGCODE Fish It Pro ULTIMATE v1.0 loaded successfully!\n\nULTIMATE FEATURES ACTIVATED:\nAI-Powered Analytics • Smart Automation • Advanced Safety • Premium Quality • And Much More!\n\nReady to dominate Fish It like never before!")
     
     task.wait(4)
     NotifyInfo("Hotkeys Active!", "HOTKEYS ENABLED:\nF1 - Toggle Auto Fishing\nF2 - Toggle Perfect Cast\nF3 - Toggle Auto Sell Threshold\n\nCheck PRESETS tab for quick setup!")
@@ -1256,7 +1256,7 @@ end)
 
 -- Console Branding - Ultimate Edition
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("BANGCODE FISH IT PRO ULTIMATE v3.0")
+print("BANGCODE FISH IT PRO ULTIMATE v1.0")
 print("THE MOST ADVANCED FISH IT SCRIPT EVER CREATED")
 print("Premium Script with AI-Powered Features & Ultimate Automation")
 print("Instagram: @_bangicoo | GitHub: codeico")
