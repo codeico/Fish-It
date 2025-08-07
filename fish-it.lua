@@ -37,7 +37,7 @@ local Window = OrionLib:MakeWindow({
     HidePremium = false,
     SaveConfig = true,
     ConfigFolder = "FishIt_BANGCODE_Pro",
-    IntroText = "██████╗  █████╗ ███╗   ██╗ ██████╗  ██████╗ ██████╗ ██████╗ ███████╗\n██████╔╝███████║██╔██╗ ██║██║  ███╗██║     ██║   ██║██║  ██║█████╗\n██╔══██╗██╔══██║██║╚██╗██║██║   ██║██║     ██║   ██║██║  ██║██╔══╝\n██████╔╝██║  ██║██║ ╚████║╚██████╔╝╚██████╗╚██████╔╝██████╔╝███████╗\n\n🎯 Professional Fish It Script | Premium Quality\n🔥 Enhanced UI/UX • Anti-Ghost Touch • Live Status\n💎 Created by BANGCODE - Trusted by Thousands"
+    IntroText = "🎯 Professional Fish It Script\n🔥 Enhanced UI/UX • Anti-Ghost Touch\n💎 Created by BANGCODE - Premium Quality\n\nWelcome to Fish It Pro v2.0!"
 })
 
 -- // Enhanced Notify Function with BANGCODE Branding
@@ -50,7 +50,7 @@ local function Notify(title, text, duration, type)
     
     table.insert(NotificationQueue, {
         Name = "🔥 BANGCODE • " .. title,
-        Content = text .. "\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━\n💎 Powered by BANGCODE",
+        Content = text .. "\n\n💎 Powered by BANGCODE",
         Image = icon,
         Time = duration or 4
     })
@@ -84,13 +84,11 @@ local UtilityTab = Window:MakeTab({ Name = "🔧 Utility", Icon = "rbxassetid://
 local InfoTab = Window:MakeTab({ Name = "ℹ️ Info", Icon = "rbxassetid://7733658504", PremiumOnly = false })
 
 -- // Info Tab - BANGCODE Branding & Status
-InfoTab:AddParagraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", "")
+InfoTab:AddParagraph("🔥 BANGCODE FISH IT PRO v2.0 🔥", "")
 
-InfoTab:AddParagraph("██████╗  █████╗ ███╗   ██╗ ██████╗  ██████╗ ██████╗ ██████╗ ███████╗", "██╔══██╗██╔══██╗████╗  ██║██╔════╝ ██╔════╝██╔═══██╗██╔══██╗██╔════╝\n██████╔╝███████║██╔██╗ ██║██║  ███╗██║     ██║   ██║██║  ██║█████╗\n██╔══██╗██╔══██║██║╚██╗██║██║   ██║██║     ██║   ██║██║  ██║██╔══╝\n██████╔╝██║  ██║██║ ╚████║╚██████╔╝╚██████╗╚██████╔╝██████╔╝███████╗\n╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝  ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝")
+InfoTab:AddParagraph("▓▓▓ B A N G C O D E ▓▓▓", "🎯 Professional Script Developer\n🔥 Premium Quality Guaranteed\n💎 Trusted by Thousands of Users\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 
-InfoTab:AddParagraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", "🎣 F I S H   I T   P R O   |   V 2 . 0   🎣\n✨ Enhanced UI/UX • Anti-Ghost Touch • Live Status ✨")
-
-InfoTab:AddParagraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", "")
+InfoTab:AddParagraph("🎣 FISH IT PRO | VERSION 2.0", "✨ Enhanced UI/UX Design\n🛡️ Anti-Ghost Touch System\n📊 Live Status Monitoring\n🔧 Professional Error Handling\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 
 local StatusSection = InfoTab:AddSection({ Name = "📊 REAL-TIME STATUS" })
 
@@ -695,26 +693,19 @@ end)
 -- Welcome Message with BANGCODE Branding
 task.spawn(function()
     task.wait(2)
-    Notify("Welcome!", "🎉 BANGCODE Fish It Pro v2.0 Loaded!\n\n🔥 Premium Features Activated:\n• Anti-Ghost Touch System ✅\n• Enhanced UI/UX Design ✅\n• Live Status Monitoring ✅\n• Professional Error Handling ✅\n\n🎯 Ready to dominate Fish It!", 8, "success")
+    Notify("Welcome!", "🎉 BANGCODE Fish It Pro v2.0 Loaded!\n\n🔥 Premium Features:\n• Anti-Ghost Touch ✅\n• Enhanced UI/UX ✅\n• Live Status ✅\n\n🎯 Ready to Fish!", 6, "success")
     
-    task.wait(3)
-    Notify("BANGCODE Info", "📢 Follow @_bangicoo on Instagram for:\n• Latest Script Updates 🔄\n• New Features Preview 👀\n• Exclusive Beta Access 🌟\n• Support & Community 🤝\n\n💎 Thank you for choosing BANGCODE!", 7, "success")
+    task.wait(4)
+    Notify("Follow Us!", "📷 Instagram: @_bangicoo\n💻 GitHub: codeico\n\n🔥 Get updates & support!", 5, "success")
 end)
 
 -- BANGCODE Watermark in Console
-print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("██████╗  █████╗ ███╗   ██╗ ██████╗  ██████╗ ██████╗ ██████╗ ███████╗")
-print("██╔══██╗██╔══██╗████╗  ██║██╔════╝ ██╔════╝██╔═══██╗██╔══██╗██╔════╝")
-print("██████╔╝███████║██╔██╗ ██║██║  ███╗██║     ██║   ██║██║  ██║█████╗  ")
-print("██╔══██╗██╔══██║██║╚██╗██║██║   ██║██║     ██║   ██║██║  ██║██╔══╝  ")
-print("██████╔╝██║  ██║██║ ╚████║╚██████╔╝╚██████╗╚██████╔╝██████╔╝███████╗")
-print("╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝  ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝")
-print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("🔥 FISH IT PRO V2.0 | CREATED BY BANGCODE")
+print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+print("🔥 BANGCODE FISH IT PRO V2.0 🔥")
 print("🎯 Premium Script with Enhanced UI/UX & Anti-Ghost Touch")
 print("📷 Instagram: @_bangicoo | 💻 GitHub: codeico")
 print("💎 Professional Quality • Trusted by Thousands")
-print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 
 -- ==============================
 -- FINAL INIT
