@@ -1,5 +1,5 @@
 --[[
-    BANGCODE's Fish It Pro - Ultimate Edition v3.0
+    BANGCODE's GANTENG Fish It Pro - Ultimate Edition v1.0
     
     Premium Fish It script with ULTIMATE features:
     • Quick Start Presets & Advanced Analytics
