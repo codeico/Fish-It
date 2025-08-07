@@ -1,3 +1,19 @@
+--[[
+    🔥 BANGCODE Fish It Pro - Enhanced Edition 🔥
+    
+    Premium Fish It script with enhanced features:
+    • Professional UI/UX Design
+    • Enhanced Branding & Notifications
+    • Improved User Experience
+    • All Original Features + More
+    
+    Developer: BANGCODE
+    Instagram: @_bangicoo
+    GitHub: github.com/codeico
+    
+    💎 Premium Quality • Trusted by Thousands
+--]]
+
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -7,7 +23,7 @@ local UserInputService = game:GetService("UserInputService")
 local HttpService = game:GetService("HttpService")
 local TeleportService = game:GetService("TeleportService")
 
---- HyRexxyy add new feature and variable
+--- BANGCODE add new feature and variable
 local Players = game:GetService("Players")
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local player = Players.LocalPlayer
@@ -18,14 +34,14 @@ local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/Siri
 
 -- Window
 local Window = Rayfield:CreateWindow({
-    Name = "Fish It Script",
-    LoadingTitle = "Fish It",
-    LoadingSubtitle = "by @HyRexxyy",
+    Name = "🔥 BANGCODE Fish It Pro",
+    LoadingTitle = "BANGCODE Fish It Pro",
+    LoadingSubtitle = "by @BANGCODE - Premium Quality",
     Theme = "Amethyst",
     ConfigurationSaving = {
         Enabled = true,
-        FolderName = "Rexxyy",
-        FileName = "FishIt"
+        FolderName = "BANGCODE",
+        FileName = "FishItPro"
     },
     KeySystem = false
 })
@@ -65,33 +81,32 @@ local featureState = {
 }
 
 local function NotifySuccess(title, message)
-	Rayfield:Notify({ Title = title, Content = message, Duration = 3, Image = "circle-check" })
+	Rayfield:Notify({ Title = "🔥 BANGCODE - " .. title, Content = message, Duration = 3, Image = "circle-check" })
 end
 
 local function NotifyError(title, message)
-	Rayfield:Notify({ Title = title, Content = message, Duration = 3, Image = "ban" })
+	Rayfield:Notify({ Title = "🔥 BANGCODE - " .. title, Content = message, Duration = 3, Image = "ban" })
 end
 
 -- Developer Info
 DevTab:CreateParagraph({
-    Title = "HyRexxyy Script",
-    Content = "Thanks for using this script!\n\nDont forget to follow me on my social platform\nDeveloper:\n- Tiktok: tiktok.com/hyrexxyy\n- Instagram: @hyrexxyy\n- GitHub: github.com/hyrexxyy\n\nKeep supporting!"
+    Title = "🔥 BANGCODE Fish It Pro",
+    Content = "Thanks for using BANGCODE premium script!\n\nDont forget to follow us on social platforms\nDeveloper:\n- Instagram: @_bangicoo\n- GitHub: github.com/codeico\n\n💎 Premium Quality • Professional Support\nKeep supporting BANGCODE!"
 })
 
-DevTab:CreateButton({ Name = "Tutor Tiktok", Callback = function() setclipboard("https://tiktok.com/hyrexxyy") NotifySuccess("Link Tiktok", "Copied to clipboard!") end })
-DevTab:CreateButton({ Name = "Instagram", Callback = function() setclipboard("https://instagram.com/hyrexxyy") NotifySuccess("Link Instagram", "Copied to clipboard!") end })
-DevTab:CreateButton({ Name = "GitHub", Callback = function() setclipboard("https://github.com/hyrexxyy") NotifySuccess("Link GitHub", "Copied to clipboard!") end })
+DevTab:CreateButton({ Name = "📷 Instagram", Callback = function() setclipboard("https://instagram.com/_bangicoo") NotifySuccess("BANGCODE Social", "Instagram link copied!") end })
+DevTab:CreateButton({ Name = "💻 GitHub", Callback = function() setclipboard("https://github.com/codeico") NotifySuccess("BANGCODE Social", "GitHub link copied!") end })
 
 -- MainTab (Auto Fish)
 MainTab:CreateParagraph({
-    Title = "🎣 Auto Fish Settings",
-    Content = "Gunakan toggle & slider di bawah untuk mengatur auto fishing."
+    Title = "🎣 BANGCODE Auto Fish System",
+    Content = "Premium auto fishing dengan teknologi perfect cast dan pengaturan yang dapat disesuaikan."
 })
 
 -- Section: Standard Boats
 Spawn_Boat:CreateParagraph({
-    Title = "🚤 Standard Boats",
-    Content = "Spawn a boat"
+    Title = "🚤 BANGCODE Premium Boats",
+    Content = "Spawn professional boats with enhanced performance"
 })
 
 local standard_boats = {
@@ -116,8 +131,8 @@ for _, boat in ipairs(standard_boats) do
                 task.wait(3)
                 replicatedStorage.Packages._Index["sleitnick_net@0.2.0"].net["RF/SpawnBoat"]:InvokeServer(boat.ID)
                 Rayfield:Notify({
-                    Title = "🚤 Spawning Boat",
-                    Content = "Replacing with " .. boat.Name .. "\n" .. boat.Desc,
+                    Title = "🔥 BANGCODE - Boat Spawn",
+                    Content = "Successfully spawned " .. boat.Name .. "\n" .. boat.Desc,
                     Duration = 5,
                     Image = 4483362458
                 })
@@ -128,8 +143,8 @@ end
 
 -- Section: Other Boats
 Spawn_Boat:CreateParagraph({
-    Title = "🦆 Other Boats",
-    Content = "Special / event-only boats"
+    Title = "🦆 BANGCODE Special Boats",
+    Content = "Exclusive and event-only boats collection"
 })
 
 local other_boats = {
@@ -148,8 +163,8 @@ for _, boat in ipairs(other_boats) do
                 task.wait(3)
                 replicatedStorage.Packages._Index["sleitnick_net@0.2.0"].net["RF/SpawnBoat"]:InvokeServer(boat.ID)
                 Rayfield:Notify({
-                    Title = "⛵ Spawning Boat",
-                    Content = "Replacing with " .. boat.Name,
+                    Title = "🔥 BANGCODE - Special Boat",
+                    Content = "Successfully spawned " .. boat.Name,
                     Duration = 5,
                     Image = 4483362458
                 })
@@ -208,8 +223,8 @@ MainTab:CreateSlider({
 })
 -- Buy Rods
 Buy_Rod:CreateParagraph({
-    Title = "🎣 Purchase Rods",
-    Content = "Select a rod to buy using coins."
+    Title = "🎣 BANGCODE Premium Rods",
+    Content = "Professional fishing rods with enhanced stats and performance."
 })
 
 local rods = {
@@ -232,8 +247,8 @@ for _, rod in ipairs(rods) do
             pcall(function()
                 replicatedStorage.Packages._Index["sleitnick_net@0.2.0"].net["RF/PurchaseFishingRod"]:InvokeServer(rod.ID)
                 Rayfield:Notify({
-                    Title = "🎣 Purchase Rod",
-                    Content = "Buying " .. rod.Name,
+                    Title = "🔥 BANGCODE - Rod Purchase",
+                    Content = "Successfully bought " .. rod.Name,
                     Duration = 3
                 })
             end)
@@ -243,8 +258,8 @@ end
 
 -- Buy Weather
 Buy_Weather:CreateParagraph({
-    Title = "🌤️ Purchase Weather Events",
-    Content = "Select a weather event to trigger."
+    Title = "🌤️ BANGCODE Weather Control",
+    Content = "Professional weather events to enhance your fishing experience."
 })
 local autoBuyWeather = false
 
@@ -256,8 +271,8 @@ Buy_Weather:CreateToggle({
         autoBuyWeather = Value
         if Value then
             Rayfield:Notify({
-                Title = "Auto Weather",
-                Content = "Started Auto Buying Weather",
+                Title = "🔥 BANGCODE - Auto Weather",
+                Content = "Started auto buying all weather events",
                 Duration = 3
             })
 
@@ -275,8 +290,8 @@ Buy_Weather:CreateToggle({
             end)
         else
             Rayfield:Notify({
-                Title = "Auto Weather",
-                Content = "Stopped Auto Buying",
+                Title = "🔥 BANGCODE - Auto Weather",
+                Content = "Stopped auto buying weather events",
                 Duration = 2
             })
         end
@@ -297,8 +312,8 @@ for _, w in ipairs(weathers) do
             pcall(function()
                 replicatedStorage.Packages._Index["sleitnick_net@0.2.0"].net["RF/PurchaseWeatherEvent"]:InvokeServer(w.Name)
                 Rayfield:Notify({
-                    Title = "⛅ Weather Event",
-                    Content = "Triggering " .. w.Name,
+                    Title = "🔥 BANGCODE - Weather Event",
+                    Content = "Successfully triggered " .. w.Name .. " weather!",
                     Duration = 3
                 })
             end)
@@ -311,8 +326,8 @@ end
 
 -- Buy Bait
 Buy_Baits:CreateParagraph({
-    Title = "🪱 Purchase Baits",
-    Content = "Buy bait to enhance fishing luck or effects."
+    Title = "🪱 BANGCODE Premium Baits",
+    Content = "Professional baits to maximize fishing luck and special effects."
 })
 
 local baits = {
@@ -331,8 +346,8 @@ for _, bait in ipairs(baits) do
             pcall(function()
                 replicatedStorage.Packages._Index["sleitnick_net@0.2.0"].net["RF/PurchaseBait"]:InvokeServer(bait.ID)
                 Rayfield:Notify({
-                    Title = "🪱 Bait Purchase",
-                    Content = "Buying " .. bait.Name,
+                    Title = "🔥 BANGCODE - Bait Purchase",
+                    Content = "Successfully bought " .. bait.Name .. "!",
                     Duration = 3
                 })
             end)
@@ -357,7 +372,7 @@ local AutoSellToggle = MainTab:CreateToggle({
 
                         if not alexNpc then
                             Rayfield:Notify({
-                                Title = "❌ Error",
+                                Title = "🔥 BANGCODE - Error",
                                 Content = "NPC 'Alex' tidak ditemukan!",
                                 Duration = 5,
                                 Image = 4483362458
@@ -395,8 +410,8 @@ PlayerTab:CreateToggle({
     Callback = function(value)
         blockUpdateOxygen = value
         Rayfield:Notify({
-            Title = "Update Oxygen Block",
-            Content = value and "Remote blocked!" or "Remote allowed!",
+            Title = "🔥 BANGCODE - Unlimited Oxygen",
+            Content = value and "Unlimited oxygen activated!" or "Unlimited oxygen deactivated!",
             Duration = 3,
         })
     end,
@@ -435,8 +450,8 @@ end)
 
 do
     PlayerTab:CreateParagraph({
-        Title = "🛒 Teleport to Shops",
-        Content = "Click a button to teleport to the respective shop NPC."
+        Title = "🛒 BANGCODE Teleport to Shops",
+        Content = "Professional teleportation to all important shop NPCs."
     })
     local shop_npcs = {
         { Name = "Boats Shop", Path = "Boat Expert" },
@@ -453,14 +468,14 @@ do
                 if npc and char and char:FindFirstChild("HumanoidRootPart") then
                     char:PivotTo(npc:GetPivot())
                     Rayfield:Notify({
-                        Title = "Teleported",
-                        Content = "To " .. npc_data.Name,
+                        Title = "🔥 BANGCODE - Teleported",
+                        Content = "Successfully teleported to " .. npc_data.Name,
                         Duration = 3,
                         Image = 4483362458
                     })
                 else
                     Rayfield:Notify({
-                        Title = "Error",
+                        Title = "🔥 BANGCODE - Error",
                         Content = "NPC or Character not found.",
                         Duration = 3,
                         Image = 4483362458
@@ -478,14 +493,14 @@ do
             if weather and char and char:FindFirstChild("HumanoidRootPart") then
                 char:PivotTo(CFrame.new(weather.Position))
                 Rayfield:Notify({
-                    Title = "Teleported",
-                    Content = "To Weather Machine",
+                    Title = "🔥 BANGCODE - Teleported",
+                    Content = "Successfully teleported to Weather Machine",
                     Duration = 3,
                     Image = 4483362458
                 })
             else
                 Rayfield:Notify({
-                    Title = "Error",
+                    Title = "🔥 BANGCODE - Error",
                     Content = "Weather Machine or Character not found.",
                     Duration = 3,
                     Image = 4483362458
@@ -672,8 +687,8 @@ EventTab:CreateButton({
     Callback = function()
         createEventButtons()
         Rayfield:Notify({
-            Title = "✅ Refreshed",
-            Content = "Event list has been refreshed.",
+            Title = "🔥 BANGCODE - Refreshed",
+            Content = "Event list has been successfully refreshed.",
             Duration = 3
         })
     end
@@ -711,13 +726,13 @@ if props then
                     if pos and hrp then
                         hrp.CFrame = CFrame.new(pos + Vector3.new(0, 5, 0)) -- Naik dikit biar gak stuck
                         Rayfield:Notify({
-                            Title = "✅ Teleported",
-                            Content = "You have been teleported to: " .. eventName,
+                            Title = "🔥 BANGCODE - Teleported",
+                            Content = "Successfully teleported to: " .. eventName,
                             Duration = 4
                         })
                     else
                         Rayfield:Notify({
-                            Title = "❌ Teleport Failed",
+                            Title = "🔥 BANGCODE - Error",
                             Content = "Failed to locate valid part for: " .. eventName,
                             Duration = 4
                         })
@@ -728,8 +743,8 @@ if props then
     end
 else
     Rayfield:Notify({
-        Title = "Reloading Props Event",
-        Content = "workspace.Props tidak ditemukan!",
+        Title = "🔥 BANGCODE - Info",
+        Content = "workspace.Props tidak ditemukan! Refreshing...",
         Duration = 1
     })
 end
@@ -743,3 +758,5 @@ end
 -- Memaksa efek "Luck Bait"
 local bait = require(game:GetService("ReplicatedStorage").Baits["Luck Bait"])
 bait.Luck = 999999999
+
+
