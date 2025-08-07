@@ -1,5 +1,5 @@
 --[[
-    🔥 BANGCODE Fish It Pro - Enhanced Edition 🔥
+    BANGCODE Fish It Pro - Enhanced Edition
     
     Premium Fish It script with enhanced features:
     • Professional UI/UX Design
@@ -7,11 +7,11 @@
     • Improved User Experience
     • All Original Features + More
     
-    Developers: BANGCODE
+    Developer: BANGCODE
     Instagram: @_bangicoo
     GitHub: github.com/codeico
     
-    💎 Premium Quality • Trusted by Thousands
+    Premium Quality • Trusted by Thousands
 --]]
 
 local Players = game:GetService("Players")
@@ -53,9 +53,9 @@ local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/Siri
 
 -- Create Window positioned like a LEFT SIDEBAR
 local Window = Rayfield:CreateWindow({
-    Name = "🔥 BANGCODE Fish It Pro",
+    Name = "BANGCODE Fish It Pro",
     LoadingTitle = "BANGCODE Fish It Pro",
-    LoadingSubtitle = "by @BANGCODE - Premium Quality",
+    LoadingSubtitle = "by BANGCODE - Premium Quality",
     Theme = "DarkBlue",
     ConfigurationSaving = {
         Enabled = true,
@@ -66,17 +66,20 @@ local Window = Rayfield:CreateWindow({
     DisableRayfieldPrompts = false,
     DisableBuildWarnings = false,
     TabWidth = 160,
-    Size = UDim2.fromOffset(420, 650), -- Narrower width like sidebar
+    Size = UDim2.fromOffset(450, 650), -- Slightly wider for separated tabs
     Position = UDim2.fromScale(0.01, 0.05) -- Far left positioning
 })
 
--- Compact sidebar-style tabs
-local InfoTab = Window:CreateTab("🏷️ INFO", "crown")
-local MainTab = Window:CreateTab("🎣 FISH", "fish") 
-local ShopTab = Window:CreateTab("🛒 SHOP", "shopping-cart")
-local TeleportTab = Window:CreateTab("🌍 TELEPORT", "map")
-local PlayerTab = Window:CreateTab("👤 PLAYER", "user")
-local UtilityTab = Window:CreateTab("⚙️ UTILITY", "settings")
+-- Separated tabs for better organization
+local InfoTab = Window:CreateTab("INFO", "crown")
+local MainTab = Window:CreateTab("AUTO FISH", "fish") 
+local RodTab = Window:CreateTab("RODS", "zap")
+local BaitTab = Window:CreateTab("BAITS", "target")
+local WeatherTab = Window:CreateTab("WEATHER", "cloud")
+local BoatTab = Window:CreateTab("BOATS", "anchor")
+local TeleportTab = Window:CreateTab("TELEPORT", "map")
+local PlayerTab = Window:CreateTab("PLAYER", "user")
+local UtilityTab = Window:CreateTab("UTILITY", "settings")
 
 -- Remotes
 local net = ReplicatedStorage:WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_net@0.2.0"):WaitForChild("net")
@@ -94,44 +97,45 @@ local autoRecastDelay = 0.5
 local enchantPos = Vector3.new(3231, -1303, 1402)
 local fishCaught = 0
 local itemsSold = 0
+local autoBuyWeather = false
 
 local featureState = {
     AutoSell = false,
 }
 
 local function NotifySuccess(title, message)
-	Rayfield:Notify({ Title = "🔥 BANGCODE - " .. title, Content = message, Duration = 3, Image = "circle-check" })
+	Rayfield:Notify({ Title = "BANGCODE - " .. title, Content = message, Duration = 3, Image = "circle-check" })
 end
 
 local function NotifyError(title, message)
-	Rayfield:Notify({ Title = "🔥 BANGCODE - " .. title, Content = message, Duration = 3, Image = "ban" })
+	Rayfield:Notify({ Title = "BANGCODE - " .. title, Content = message, Duration = 3, Image = "ban" })
 end
 
 local function NotifyInfo(title, message)
-	Rayfield:Notify({ Title = "🔥 BANGCODE - " .. title, Content = message, Duration = 4, Image = "info" })
+	Rayfield:Notify({ Title = "BANGCODE - " .. title, Content = message, Duration = 4, Image = "info" })
 end
 
 -- ═══════════════════════════════════════════════════════════════
--- 🏷️ BANGCODE INFO TAB - Sidebar Style Layout
+-- INFO TAB - BANGCODE Branding Section
 -- ═══════════════════════════════════════════════════════════════
 
 InfoTab:CreateParagraph({
-    Title = "🔥 BANGCODE Fish It Pro v2.0",
-    Content = "Premium script with enhanced UI/UX, anti-ghost touch system, and professional quality guaranteed.\n\n💎 Created by BANGCODE - Trusted by thousands of users worldwide!"
+    Title = "BANGCODE Fish It Pro v2.0",
+    Content = "Premium script with enhanced UI/UX, anti-ghost touch system, and professional quality guaranteed.\n\nCreated by BANGCODE - Trusted by thousands of users worldwide!"
 })
 
 InfoTab:CreateParagraph({
-    Title = "✨ Enhanced Features",
-    Content = "🛡️ Anti-Ghost Touch System\n🎨 Improved UI/UX Design\n📊 Live Status Monitoring\n🔧 Professional Error Handling\n⚡ Optimized Performance\n🎯 User-Friendly Interface"
+    Title = "Enhanced Features",
+    Content = "Anti-Ghost Touch System\nImproved UI/UX Design\nLive Status Monitoring\nProfessional Error Handling\nOptimized Performance\nUser-Friendly Interface"
 })
 
 InfoTab:CreateParagraph({
-    Title = "📱 Follow BANGCODE",
-    Content = "Stay updated with the latest scripts and features!\n\n• Instagram: @_bangicoo\n• GitHub: github.com/codeico\n\nYour support helps us create better tools!"
+    Title = "Follow BANGCODE",
+    Content = "Stay updated with the latest scripts and features!\n\nInstagram: @_bangicoo\nGitHub: github.com/codeico\n\nYour support helps us create better tools!"
 })
 
 InfoTab:CreateButton({ 
-    Name = "📷 Copy Instagram Link", 
+    Name = "Copy Instagram Link", 
     Callback = CreateSafeCallback(function() 
         setclipboard("https://instagram.com/_bangicoo") 
         NotifySuccess("Social Media", "Instagram link copied! Follow for updates and support!")
@@ -139,7 +143,7 @@ InfoTab:CreateButton({
 })
 
 InfoTab:CreateButton({ 
-    Name = "💻 Copy GitHub Link", 
+    Name = "Copy GitHub Link", 
     Callback = CreateSafeCallback(function() 
         setclipboard("https://github.com/codeico") 
         NotifySuccess("Social Media", "GitHub link copied! Check out more premium scripts!")
@@ -147,16 +151,16 @@ InfoTab:CreateButton({
 })
 
 -- ═══════════════════════════════════════════════════════════════
--- 🎣 AUTO FISH TAB - Professional Fishing System
+-- AUTO FISH TAB - Professional Fishing System
 -- ═══════════════════════════════════════════════════════════════
 
 MainTab:CreateParagraph({
-    Title = "🎣 BANGCODE Auto Fish System",
+    Title = "BANGCODE Auto Fish System",
     Content = "Professional auto fishing with perfect cast technology and customizable settings."
 })
 
 MainTab:CreateToggle({
-    Name = "🔥 Enable Auto Fishing",
+    Name = "Enable Auto Fishing",
     CurrentValue = false,
     Callback = CreateSafeCallback(function(val)
         autofish = val
@@ -191,7 +195,7 @@ MainTab:CreateToggle({
 })
 
 MainTab:CreateToggle({
-    Name = "✨ Perfect Cast Mode",
+    Name = "Perfect Cast Mode",
     CurrentValue = false,
     Callback = CreateSafeCallback(function(val)
         perfectCast = val
@@ -200,7 +204,7 @@ MainTab:CreateToggle({
 })
 
 MainTab:CreateSlider({
-    Name = "⏱️ Auto Recast Delay",
+    Name = "Auto Recast Delay",
     Range = {0.5, 5},
     Increment = 0.1,
     CurrentValue = autoRecastDelay,
@@ -211,7 +215,7 @@ MainTab:CreateSlider({
 
 -- Auto Sell Section
 local AutoSellToggle = MainTab:CreateToggle({
-    Name = "💰 Auto Sell Items (Teleport to Alex)",
+    Name = "Auto Sell Items (Teleport to Alex)",
     CurrentValue = false,
     Flag = "AutoSell",
     Callback = CreateSafeCallback(function(value)
@@ -255,9 +259,9 @@ local AutoSellToggle = MainTab:CreateToggle({
 })
 
 MainTab:CreateButton({
-    Name = "📊 Show Session Stats",
+    Name = "Show Session Stats",
     Callback = CreateSafeCallback(function()
-        local stats = string.format("BANGCODE Session Statistics:\n\n🎣 Fish Caught: %d\n💰 Items Sold: %d\n⚡ Auto Fish: %s\n🛒 Auto Sell: %s", 
+        local stats = string.format("BANGCODE Session Statistics:\n\nFish Caught: %d\nItems Sold: %d\nAuto Fish: %s\nAuto Sell: %s", 
             fishCaught, itemsSold, 
             autofish and "Active" or "Inactive",
             featureState.AutoSell and "Active" or "Inactive"
@@ -267,18 +271,12 @@ MainTab:CreateButton({
 })
 
 -- ═══════════════════════════════════════════════════════════════
--- 🛒 SHOP TAB - Comprehensive Shopping System
+-- RODS TAB - Premium Fishing Rods
 -- ═══════════════════════════════════════════════════════════════
 
-ShopTab:CreateParagraph({
-    Title = "🛒 BANGCODE Premium Shop",
-    Content = "Professional shopping system with organized categories and enhanced user experience."
-})
-
--- Fishing Rods Section
-ShopTab:CreateParagraph({
-    Title = "🎣 Premium Fishing Rods",
-    Content = "Select a rod to purchase using coins."
+RodTab:CreateParagraph({
+    Title = "BANGCODE Premium Fishing Rods",
+    Content = "Professional fishing rods with enhanced stats and performance specifications. Select a rod to purchase using coins."
 })
 
 local rods = {
@@ -295,7 +293,7 @@ local rods = {
 }
 
 for _, rod in ipairs(rods) do
-    ShopTab:CreateButton({
+    RodTab:CreateButton({
         Name = rod.Name .. " (" .. rod.Price .. ")",
         Callback = CreateSafeCallback(function()
             pcall(function()
@@ -306,10 +304,13 @@ for _, rod in ipairs(rods) do
     })
 end
 
--- Fishing Baits Section
-ShopTab:CreateParagraph({
-    Title = "🪱 Premium Fishing Baits",
-    Content = "Buy bait to enhance fishing luck and effects."
+-- ═══════════════════════════════════════════════════════════════
+-- BAITS TAB - Premium Fishing Baits
+-- ═══════════════════════════════════════════════════════════════
+
+BaitTab:CreateParagraph({
+    Title = "BANGCODE Premium Fishing Baits",
+    Content = "Professional baits to maximize fishing luck and unlock special effects for enhanced performance."
 })
 
 local baits = {
@@ -322,7 +323,7 @@ local baits = {
 }
 
 for _, bait in ipairs(baits) do
-    ShopTab:CreateButton({
+    BaitTab:CreateButton({
         Name = bait.Name .. " (" .. bait.Price .. ")",
         Callback = CreateSafeCallback(function()
             pcall(function()
@@ -333,10 +334,39 @@ for _, bait in ipairs(baits) do
     })
 end
 
--- Weather Events Section
-ShopTab:CreateParagraph({
-    Title = "🌤️ Weather Events",
-    Content = "Trigger special weather events to enhance fishing."
+-- ═══════════════════════════════════════════════════════════════
+-- WEATHER TAB - Weather Events & Auto Buy
+-- ═══════════════════════════════════════════════════════════════
+
+WeatherTab:CreateParagraph({
+    Title = "BANGCODE Weather Control System",
+    Content = "Professional weather events to enhance your fishing experience with special effects and bonuses."
+})
+
+WeatherTab:CreateToggle({
+    Name = "Auto Buy All Weather Events",
+    CurrentValue = false,
+    Flag = "AutoBuyWeatherToggle",
+    Callback = CreateSafeCallback(function(Value)
+        autoBuyWeather = Value
+        if Value then
+            NotifySuccess("Auto Weather", "Started auto buying all weather events")
+            task.spawn(function()
+                while autoBuyWeather do
+                    for _, w in ipairs(weathers) do
+                        if not autoBuyWeather then break end
+                        pcall(function()
+                            replicatedStorage.Packages._Index["sleitnick_net@0.2.0"].net["RF/PurchaseWeatherEvent"]:InvokeServer(w.Name)
+                        end)
+                        task.wait(1.5)
+                    end
+                    task.wait(10)
+                end
+            end)
+        else
+            NotifyInfo("Auto Weather", "Stopped auto buying weather events")
+        end
+    end, "auto_weather")
 })
 
 local weathers = {
@@ -348,7 +378,7 @@ local weathers = {
 }
 
 for _, w in ipairs(weathers) do
-    ShopTab:CreateButton({
+    WeatherTab:CreateButton({
         Name = w.Name .. " (" .. w.Price .. ")",
         Callback = CreateSafeCallback(function()
             pcall(function()
@@ -359,10 +389,13 @@ for _, w in ipairs(weathers) do
     })
 end
 
--- Boats Section
-ShopTab:CreateParagraph({
-    Title = "🛥️ Premium Boats",
-    Content = "Spawn professional boats with enhanced stats."
+-- ═══════════════════════════════════════════════════════════════
+-- BOATS TAB - Premium Boats
+-- ═══════════════════════════════════════════════════════════════
+
+BoatTab:CreateParagraph({
+    Title = "BANGCODE Premium Boats",
+    Content = "Professional boats with enhanced performance and detailed specifications for optimal fishing experience."
 })
 
 local standard_boats = {
@@ -377,8 +410,8 @@ local standard_boats = {
 }
 
 for _, boat in ipairs(standard_boats) do
-    ShopTab:CreateButton({
-        Name = "🛥️ " .. boat.Name,
+    BoatTab:CreateButton({
+        Name = boat.Name,
         Callback = CreateSafeCallback(function()
             pcall(function()
                 replicatedStorage.Packages._Index["sleitnick_net@0.2.0"].net["RF/DespawnBoat"]:InvokeServer()
@@ -391,17 +424,17 @@ for _, boat in ipairs(standard_boats) do
 end
 
 -- ═══════════════════════════════════════════════════════════════
--- 🌍 TELEPORT TAB - Advanced Teleportation Network
+-- TELEPORT TAB - Advanced Teleportation Network
 -- ═══════════════════════════════════════════════════════════════
 
 TeleportTab:CreateParagraph({
-    Title = "🌍 BANGCODE Teleport System",
+    Title = "BANGCODE Teleport System",
     Content = "Professional teleportation with enhanced safety and user experience."
 })
 
 -- Islands Section
 TeleportTab:CreateParagraph({
-    Title = "🏝️ Islands & Locations",
+    Title = "Islands & Locations",
     Content = "Quick teleport to all major islands and locations."
 })
 
@@ -436,7 +469,7 @@ end
 
 -- NPCs Section
 TeleportTab:CreateParagraph({
-    Title = "👥 NPCs & Shops",
+    Title = "NPCs & Shops",
     Content = "Quick teleport to all important NPCs and shop locations."
 })
 
@@ -463,17 +496,17 @@ for _, npc in ipairs(npcFolder:GetChildren()) do
 end
 
 -- ═══════════════════════════════════════════════════════════════
--- 👤 PLAYER TAB - Character Enhancement
+-- PLAYER TAB - Character Enhancement
 -- ═══════════════════════════════════════════════════════════════
 
 PlayerTab:CreateParagraph({
-    Title = "👤 BANGCODE Player Enhancement",
+    Title = "BANGCODE Player Enhancement",
     Content = "Professional character modifications with safety features."
 })
 
 -- Movement Section
 PlayerTab:CreateToggle({
-    Name = "∞ Infinite Jump",
+    Name = "Infinite Jump",
     CurrentValue = false,
     Callback = CreateSafeCallback(function(val)
         ijump = val
@@ -488,7 +521,7 @@ UserInputService.JumpRequest:Connect(function()
 end)
 
 PlayerTab:CreateSlider({
-    Name = "🏃‍♂️ Walk Speed",
+    Name = "Walk Speed",
     Range = {16, 150},
     Increment = 1,
     CurrentValue = 16,
@@ -499,7 +532,7 @@ PlayerTab:CreateSlider({
 })
 
 PlayerTab:CreateSlider({
-    Name = "🦘 Jump Power",
+    Name = "Jump Power",
     Range = {50, 500},
     Increment = 10,
     CurrentValue = 35,
@@ -516,7 +549,7 @@ PlayerTab:CreateSlider({
 local blockUpdateOxygen = false
 
 PlayerTab:CreateToggle({
-    Name = "🫁 Unlimited Oxygen",
+    Name = "Unlimited Oxygen",
     CurrentValue = false,
     Flag = "BlockUpdateOxygen",
     Callback = CreateSafeCallback(function(value)
@@ -539,16 +572,16 @@ oldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(self, ...)
 end))
 
 -- ═══════════════════════════════════════════════════════════════
--- ⚙️ UTILITY TAB - System Management & Settings
+-- UTILITY TAB - System Management & Settings
 -- ═══════════════════════════════════════════════════════════════
 
 UtilityTab:CreateParagraph({
-    Title = "⚙️ BANGCODE Utility System",
+    Title = "BANGCODE Utility System",
     Content = "Professional system management and utility features."
 })
 
 UtilityTab:CreateButton({ 
-    Name = "🔄 Rejoin Server", 
+    Name = "Rejoin Server", 
     Callback = CreateSafeCallback(function() 
         NotifyInfo("Server", "Rejoining current server...")
         task.wait(1)
@@ -557,7 +590,7 @@ UtilityTab:CreateButton({
 })
 
 UtilityTab:CreateButton({ 
-    Name = "🎲 Server Hop", 
+    Name = "Server Hop", 
     Callback = CreateSafeCallback(function()
         NotifyInfo("Server Hop", "Finding new server with better performance...")
         local placeId = game.PlaceId
@@ -590,7 +623,7 @@ UtilityTab:CreateButton({
 })
 
 UtilityTab:CreateButton({ 
-    Name = "🗑️ Unload Script", 
+    Name = "Unload Script", 
     Callback = CreateSafeCallback(function()
         NotifyInfo("BANGCODE", "Thank you for using BANGCODE Fish It Pro! Script will unload in 3 seconds...")
         task.wait(3)
@@ -603,18 +636,18 @@ UtilityTab:CreateButton({
 -- Welcome Messages
 task.spawn(function()
     task.wait(2)
-    NotifySuccess("Welcome!", "🔥 BANGCODE Fish It Pro v2.0 loaded successfully!\n\nPremium features activated:\n• Anti-Ghost Touch System ✅\n• Enhanced UI/UX Design ✅\n• Professional Error Handling ✅\n\n🎯 Ready to dominate Fish It!")
+    NotifySuccess("Welcome!", "BANGCODE Fish It Pro v2.0 loaded successfully!\n\nPremium features activated:\nAnti-Ghost Touch System\nEnhanced UI/UX Design\nProfessional Error Handling\n\nReady to dominate Fish It!")
     
     task.wait(4)
-    NotifyInfo("Follow BANGCODE!", "📷 Instagram: @_bangicoo\n💻 GitHub: codeico\n\n🔥 Follow us for updates, support, and exclusive beta access to new scripts!")
+    NotifyInfo("Follow BANGCODE!", "Instagram: @_bangicoo\nGitHub: codeico\n\nFollow us for updates, support, and exclusive beta access to new scripts!")
 end)
 
 -- Console Branding
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("🔥 BANGCODE FISH IT PRO V2.0 🔥")
-print("🎯 Premium Script with Enhanced UI/UX & Anti-Ghost Touch")
-print("📷 Instagram: @_bangicoo | 💻 GitHub: codeico")
-print("💎 Professional Quality • Trusted by Thousands")
+print("BANGCODE FISH IT PRO V2.0")
+print("Premium Script with Enhanced UI/UX & Anti-Ghost Touch")
+print("Instagram: @_bangicoo | GitHub: codeico")
+print("Professional Quality • Trusted by Thousands")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 
 -- Performance Enhancements (from original script)
