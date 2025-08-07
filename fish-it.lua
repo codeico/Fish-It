@@ -29,15 +29,15 @@ local replicatedStorage = game:GetService("ReplicatedStorage")
 local player = Players.LocalPlayer
 if not player or not replicatedStorage then return end
 
--- Load Rayfield
+-- Load Rayfield with optimized sidebar-style configuration
 local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua"))()
 
--- Window
+-- Create Window positioned like a LEFT SIDEBAR
 local Window = Rayfield:CreateWindow({
     Name = "🔥 BANGCODE Fish It Pro",
     LoadingTitle = "BANGCODE Fish It Pro",
     LoadingSubtitle = "by @BANGCODE - Premium Quality",
-    Theme = "Ocean", -- Changed to Ocean for better elegance
+    Theme = "DarkBlue",
     ConfigurationSaving = {
         Enabled = true,
         FolderName = "BANGCODE",
@@ -47,18 +47,17 @@ local Window = Rayfield:CreateWindow({
     DisableRayfieldPrompts = false,
     DisableBuildWarnings = false,
     TabWidth = 160,
-    Size = UDim2.fromOffset(580, 460), -- Optimized size for left sidebar
-    Position = UDim2.fromScale(0.05, 0.1) -- Position for better accessibility
+    Size = UDim2.fromOffset(420, 650), -- Narrower width like sidebar
+    Position = UDim2.fromScale(0.01, 0.05) -- Far left positioning
 })
 
--- Elegant Tabs Organization (Left Sidebar)
-
-local InfoTab = Window:CreateTab("🏷️ BANGCODE", "crown")
-local MainTab = Window:CreateTab("🎣 Auto Fish", "fish")
-local ShopTab = Window:CreateTab("🛒 Shop", "shopping-cart")
-local TeleportTab = Window:CreateTab("🌍 Teleport", "map")
-local PlayerTab = Window:CreateTab("👤 Player", "user")
-local UtilityTab = Window:CreateTab("⚙️ Utility", "settings")
+-- Compact sidebar-style tabs
+local InfoTab = Window:CreateTab("🏷️ INFO", "crown")
+local MainTab = Window:CreateTab("🎣 FISH", "fish") 
+local ShopTab = Window:CreateTab("🛒 SHOP", "shopping-cart")
+local TeleportTab = Window:CreateTab("🌍 TELEPORT", "map")
+local PlayerTab = Window:CreateTab("👤 PLAYER", "user")
+local UtilityTab = Window:CreateTab("⚙️ UTILITY", "settings")
 
 
 -- Remotes
@@ -88,50 +87,37 @@ local function NotifyError(title, message)
 	Rayfield:Notify({ Title = "🔥 BANGCODE - " .. title, Content = message, Duration = 3, Image = "ban" })
 end
 
+local function NotifyInfo(title, message)
+	Rayfield:Notify({ Title = "🔥 BANGCODE - " .. title, Content = message, Duration = 4, Image = "info" })
+end
+
 -- ═══════════════════════════════════════════════════════════════
--- 🏷️ BANGCODE INFO TAB - Elegant Branding Section
+-- 🏷️ BANGCODE INFO TAB - Sidebar Style Layout
 -- ═══════════════════════════════════════════════════════════════
 
 InfoTab:CreateParagraph({
     Title = "🔥 BANGCODE Fish It Pro v2.0",
-    Content = "Premium fishing script with professional quality and enhanced user experience.\n\n💎 Trusted by thousands of users worldwide\n⚡ Regular updates and professional support\n🛡️ Anti-detection technology included"
-})
-
-InfoTab:CreateSection({
-    Name = "✨ Premium Features",
-    Icon = "star",
-    Side = "Left"
+    Content = "Premium quality fishing script\n💎 Trusted by thousands worldwide\n⚡ Professional support included\n🛡️ Anti-detection technology"
 })
 
 InfoTab:CreateParagraph({
-    Title = "Enhanced Features",
-    Content = "🎯 Professional Auto Fishing System\n🛒 Comprehensive Shop Integration\n🌍 Advanced Teleportation Network\n👤 Player Enhancement Tools\n⚙️ System Utility Functions\n🔧 Professional Error Handling"
-})
-
-InfoTab:CreateSection({
-    Name = "📱 BANGCODE Social",
-    Icon = "users",
-    Side = "Left"
-})
-
-InfoTab:CreateParagraph({
-    Title = "Follow BANGCODE",
-    Content = "Stay updated with latest scripts, features, and exclusive content!\n\n📷 Instagram: Premium script showcases\n💻 GitHub: Latest releases and updates\n🔥 Your support helps us create better tools"
+    Title = "✨ Enhanced Features",
+    Content = "🎯 Professional Auto Fishing\n🛒 Complete Shop Integration\n🌍 Advanced Teleportation\n👤 Player Enhancement Tools\n⚙️ System Utilities\n🔧 Error Handling"
 })
 
 InfoTab:CreateButton({ 
-    Name = "📷 Instagram • @_bangicoo", 
+    Name = "📷 Instagram @_bangicoo", 
     Callback = function() 
         setclipboard("https://instagram.com/_bangicoo") 
-        NotifySuccess("Social Media", "Instagram link copied! Follow for exclusive content and updates!") 
+        NotifySuccess("Social", "Instagram link copied!") 
     end 
 })
 
 InfoTab:CreateButton({ 
-    Name = "💻 GitHub • codeico", 
+    Name = "💻 GitHub codeico", 
     Callback = function() 
         setclipboard("https://github.com/codeico") 
-        NotifySuccess("Social Media", "GitHub link copied! Check out our latest premium scripts!") 
+        NotifySuccess("Social", "GitHub link copied!") 
     end 
 })
 
@@ -139,15 +125,9 @@ InfoTab:CreateButton({
 -- 🎣 AUTO FISH TAB - Professional Fishing System
 -- ═══════════════════════════════════════════════════════════════
 
-MainTab:CreateSection({
-    Name = "🎣 Fishing Automation",
-    Icon = "fish",
-    Side = "Left"
-})
-
 MainTab:CreateParagraph({
-    Title = "BANGCODE Auto Fish Pro",
-    Content = "Professional auto fishing system with advanced perfect cast technology and customizable settings for optimal performance."
+    Title = "🎣 BANGCODE Auto Fish Pro",
+    Content = "Professional auto fishing system with perfect cast technology and customizable settings."
 })
 
 -- ═══════════════════════════════════════════════════════════════
@@ -785,16 +765,21 @@ UtilityTab:CreateButton({
 
 -- 🔄 Ambil semua anak dari workspace.Props dan filter hanya yang berupa Model atau BasePart
 
+TeleportTab:CreateSection({
+    Name = "🎪 Events & Props",
+    Icon = "zap",
+    Side = "Left"
+})
+
 local function createEventButtons()
-    EventTab.Flags = {} -- Bersihkan flags lama agar tidak dobel
     local props = Workspace:FindFirstChild("Props")
     if props then
         for _, child in pairs(props:GetChildren()) do
             if child:IsA("Model") or child:IsA("BasePart") then
                 local eventName = child.Name
 
-                EventTab:CreateButton({
-                    Name = "Teleport to: " .. eventName,
+                TeleportTab:CreateButton({
+                    Name = eventName,
                     Callback = function()
                         local character = Workspace.Characters:FindFirstChild(LocalPlayer.Name)
                         local hrp = character and character:FindFirstChild("HumanoidRootPart")
@@ -814,15 +799,15 @@ local function createEventButtons()
                         end
 
                         if pos and hrp then
-                            hrp.CFrame = CFrame.new(pos + Vector3.new(0, 5, 0)) -- Naik dikit biar gak stuck
+                            hrp.CFrame = CFrame.new(pos + Vector3.new(0, 5, 0))
                             Rayfield:Notify({
-                                Title = "✅ Teleported",
-                                Content = "You have been teleported to: " .. eventName,
+                                Title = "🔥 BANGCODE - Teleported",
+                                Content = "Successfully teleported to: " .. eventName,
                                 Duration = 4
                             })
                         else
                             Rayfield:Notify({
-                                Title = "❌ Teleport Failed",
+                                Title = "🔥 BANGCODE - Error",
                                 Content = "Failed to locate valid part for: " .. eventName,
                                 Duration = 4
                             })
@@ -834,9 +819,8 @@ local function createEventButtons()
     end
 end
 
--- Tombol untuk refresh list event
-EventTab:CreateButton({
-    Name = "🔄 Refresh Event List",
+TeleportTab:CreateButton({
+    Name = "🔄 Refresh Events List",
     Callback = function()
         createEventButtons()
         Rayfield:Notify({
@@ -850,57 +834,8 @@ EventTab:CreateButton({
 -- Panggil pertama kali saat tab dibuka
 createEventButtons()
 
-local props = Workspace:FindFirstChild("Props")
-if props then
-    for _, child in pairs(props:GetChildren()) do
-        if child:IsA("Model") or child:IsA("BasePart") then
-            local eventName = child.Name
-
-            EventTab:CreateButton({
-                Name = "Teleport to: " .. eventName,
-                Callback = function()
-                    local character = Workspace.Characters:FindFirstChild(LocalPlayer.Name)
-                    local hrp = character and character:FindFirstChild("HumanoidRootPart")
-                    local pos = nil
-
-                    if child:IsA("Model") then
-                        if child.PrimaryPart then
-                            pos = child.PrimaryPart.Position
-                        else
-                            local part = child:FindFirstChildWhichIsA("BasePart")
-                            if part then
-                                pos = part.Position
-                            end
-                        end
-                    elseif child:IsA("BasePart") then
-                        pos = child.Position
-                    end
-
-                    if pos and hrp then
-                        hrp.CFrame = CFrame.new(pos + Vector3.new(0, 5, 0)) -- Naik dikit biar gak stuck
-                        Rayfield:Notify({
-                            Title = "🔥 BANGCODE - Teleported",
-                            Content = "Successfully teleported to: " .. eventName,
-                            Duration = 4
-                        })
-                    else
-                        Rayfield:Notify({
-                            Title = "🔥 BANGCODE - Error",
-                            Content = "Failed to locate valid part for: " .. eventName,
-                            Duration = 4
-                        })
-                    end
-                end
-            })
-        end
-    end
-else
-    Rayfield:Notify({
-        Title = "🔥 BANGCODE - Info",
-        Content = "workspace.Props tidak ditemukan! Refreshing...",
-        Duration = 1
-    })
-end
+-- This section is now handled by the createEventButtons function above
+-- Removing duplicate code that references undefined EventTab
 
 -- Mengubah semua modifier fishing rod menjadi 99999
 local Modifiers = require(game:GetService("ReplicatedStorage").Shared.FishingRodModifiers)
