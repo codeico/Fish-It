@@ -7,7 +7,7 @@
     • Improved User Experience
     • All Original Features + More
     
-    Developer: BANGCODE
+    Developers: BANGCODE
     Instagram: @_bangicoo
     GitHub: github.com/codeico
     
@@ -22,6 +22,25 @@ local LocalPlayer = Players.LocalPlayer
 local UserInputService = game:GetService("UserInputService")
 local HttpService = game:GetService("HttpService")
 local TeleportService = game:GetService("TeleportService")
+
+-- BANGCODE Anti Ghost Touch System
+local ButtonCooldowns = {}
+local BUTTON_COOLDOWN = 0.5
+
+local function CreateSafeCallback(originalCallback, buttonId)
+    return function(...)
+        local currentTime = tick()
+        if ButtonCooldowns[buttonId] and currentTime - ButtonCooldowns[buttonId] < BUTTON_COOLDOWN then
+            return
+        end
+        ButtonCooldowns[buttonId] = currentTime
+        
+        local success, result = pcall(originalCallback, ...)
+        if not success then
+            warn("BANGCODE Error:", result)
+        end
+    end
+end
 
 --- BANGCODE add new feature and variable
 local Players = game:GetService("Players")
@@ -59,7 +78,6 @@ local TeleportTab = Window:CreateTab("🌍 TELEPORT", "map")
 local PlayerTab = Window:CreateTab("👤 PLAYER", "user")
 local UtilityTab = Window:CreateTab("⚙️ UTILITY", "settings")
 
-
 -- Remotes
 local net = ReplicatedStorage:WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_net@0.2.0"):WaitForChild("net")
 local rodRemote = net:WaitForChild("RF/ChargeFishingRod")
@@ -67,13 +85,15 @@ local miniGameRemote = net:WaitForChild("RF/RequestFishingMinigameStarted")
 local finishRemote = net:WaitForChild("RE/FishingCompleted")
 local equipRemote = net:WaitForChild("RE/EquipToolFromHotbar")
 
--- State
+-- State Variables
 local AutoSell = false
 local autofish = false
 local perfectCast = false
 local ijump = false
 local autoRecastDelay = 0.5
 local enchantPos = Vector3.new(3231, -1303, 1402)
+local fishCaught = 0
+local itemsSold = 0
 
 local featureState = {
     AutoSell = false,
@@ -97,28 +117,33 @@ end
 
 InfoTab:CreateParagraph({
     Title = "🔥 BANGCODE Fish It Pro v2.0",
-    Content = "Premium quality fishing script\n💎 Trusted by thousands worldwide\n⚡ Professional support included\n🛡️ Anti-detection technology"
+    Content = "Premium script with enhanced UI/UX, anti-ghost touch system, and professional quality guaranteed.\n\n💎 Created by BANGCODE - Trusted by thousands of users worldwide!"
 })
 
 InfoTab:CreateParagraph({
     Title = "✨ Enhanced Features",
-    Content = "🎯 Professional Auto Fishing\n🛒 Complete Shop Integration\n🌍 Advanced Teleportation\n👤 Player Enhancement Tools\n⚙️ System Utilities\n🔧 Error Handling"
+    Content = "🛡️ Anti-Ghost Touch System\n🎨 Improved UI/UX Design\n📊 Live Status Monitoring\n🔧 Professional Error Handling\n⚡ Optimized Performance\n🎯 User-Friendly Interface"
+})
+
+InfoTab:CreateParagraph({
+    Title = "📱 Follow BANGCODE",
+    Content = "Stay updated with the latest scripts and features!\n\n• Instagram: @_bangicoo\n• GitHub: github.com/codeico\n\nYour support helps us create better tools!"
 })
 
 InfoTab:CreateButton({ 
-    Name = "📷 Instagram @_bangicoo", 
-    Callback = function() 
+    Name = "📷 Copy Instagram Link", 
+    Callback = CreateSafeCallback(function() 
         setclipboard("https://instagram.com/_bangicoo") 
-        NotifySuccess("Social", "Instagram link copied!") 
-    end 
+        NotifySuccess("Social Media", "Instagram link copied! Follow for updates and support!")
+    end, "instagram")
 })
 
 InfoTab:CreateButton({ 
-    Name = "💻 GitHub codeico", 
-    Callback = function() 
+    Name = "💻 Copy GitHub Link", 
+    Callback = CreateSafeCallback(function() 
         setclipboard("https://github.com/codeico") 
-        NotifySuccess("Social", "GitHub link copied!") 
-    end 
+        NotifySuccess("Social Media", "GitHub link copied! Check out more premium scripts!")
+    end, "github")
 })
 
 -- ═══════════════════════════════════════════════════════════════
@@ -126,101 +151,17 @@ InfoTab:CreateButton({
 -- ═══════════════════════════════════════════════════════════════
 
 MainTab:CreateParagraph({
-    Title = "🎣 BANGCODE Auto Fish Pro",
-    Content = "Professional auto fishing system with perfect cast technology and customizable settings."
+    Title = "🎣 BANGCODE Auto Fish System",
+    Content = "Professional auto fishing with perfect cast technology and customizable settings."
 })
-
--- ═══════════════════════════════════════════════════════════════
--- 🛒 SHOP TAB - Comprehensive Shopping System
--- ═══════════════════════════════════════════════════════════════
-
-ShopTab:CreateSection({
-    Name = "🚤 Premium Boats",
-    Icon = "anchor",
-    Side = "Left"
-})
-
-ShopTab:CreateParagraph({
-    Title = "BANGCODE Premium Boats",
-    Content = "Professional boats with enhanced performance and detailed specifications for optimal fishing experience."
-})
-
-local standard_boats = {
-    { Name = "Small Boat", ID = 1, Desc = "Acceleration: 160% | Passengers: 3 | Top Speed: 120%" },
-    { Name = "Kayak", ID = 2, Desc = "Acceleration: 180% | Passengers: 1 | Top Speed: 155%" },
-    { Name = "Jetski", ID = 3, Desc = "Acceleration: 240% | Passengers: 2 | Top Speed: 280%" },
-    { Name = "Highfield Boat", ID = 4, Desc = "Acceleration: 180% | Passengers: 3 | Top Speed: 180%" },
-    { Name = "Speed Boat", ID = 5, Desc = "Acceleration: 200% | Passengers: 4 | Top Speed: 220%" },
-    { Name = "Fishing Boat", ID = 6, Desc = "Acceleration: 180% | Passengers: 8 | Top Speed: 230%" },
-    { Name = "Mini Yacht", ID = 14, Desc = "Acceleration: 140% | Passengers: 10 | Top Speed: 290%" },
-    { Name = "Hyper Boat", ID = 7, Desc = "Acceleration: 240% | Passengers: 7 | Top Speed: 400%" },
-    { Name = "Frozen Boat", ID = 11, Desc = "Acceleration: 193% | Passengers: 3 | Top Speed: 230%" },
-    { Name = "Cruiser Boat", ID = 13, Desc = "Acceleration: 180% | Passengers: 4 | Top Speed: 185%" }
-}
-
-for _, boat in ipairs(standard_boats) do
-    ShopTab:CreateButton({
-        Name = "🛥️ " .. boat.Name,
-        Callback = function()
-            pcall(function()
-                replicatedStorage.Packages._Index["sleitnick_net@0.2.0"].net["RF/DespawnBoat"]:InvokeServer()
-                task.wait(3)
-                replicatedStorage.Packages._Index["sleitnick_net@0.2.0"].net["RF/SpawnBoat"]:InvokeServer(boat.ID)
-                Rayfield:Notify({
-                    Title = "🔥 BANGCODE - Boat Spawn",
-                    Content = "Successfully spawned " .. boat.Name .. "\n" .. boat.Desc,
-                    Duration = 5,
-                    Image = 4483362458
-                })
-            end)
-        end
-    })
-end
-
-ShopTab:CreateSection({
-    Name = "🦆 Special Boats",
-    Icon = "award",
-    Side = "Left"
-})
-
-ShopTab:CreateParagraph({
-    Title = "BANGCODE Special Collection",
-    Content = "Exclusive and event-only boats with unique designs and special capabilities."
-})
-
-local other_boats = {
-    { Name = "Alpha Floaty", ID = 8 },
-    { Name = "DEV Evil Duck 9000", ID = 9 },
-    { Name = "Festive Duck", ID = 10 },
-    { Name = "Santa Sleigh", ID = 12 }
-}
-
-for _, boat in ipairs(other_boats) do
-    ShopTab:CreateButton({
-        Name = "🛶 " .. boat.Name,
-        Callback = function()
-            pcall(function()
-                replicatedStorage.Packages._Index["sleitnick_net@0.2.0"].net["RF/DespawnBoat"]:InvokeServer()
-                task.wait(3)
-                replicatedStorage.Packages._Index["sleitnick_net@0.2.0"].net["RF/SpawnBoat"]:InvokeServer(boat.ID)
-                Rayfield:Notify({
-                    Title = "🔥 BANGCODE - Special Boat",
-                    Content = "Successfully spawned " .. boat.Name,
-                    Duration = 5,
-                    Image = 4483362458
-                })
-            end)
-        end
-    })
-end
-
 
 MainTab:CreateToggle({
-    Name = "🎣 Enable Auto Fishing",
+    Name = "🔥 Enable Auto Fishing",
     CurrentValue = false,
-    Callback = function(val)
+    Callback = CreateSafeCallback(function(val)
         autofish = val
         if val then
+            NotifySuccess("Auto Fish", "BANGCODE auto fishing started! Professional quality guaranteed.")
             task.spawn(function()
                 while autofish do
                     pcall(function()
@@ -237,21 +178,25 @@ MainTab:CreateToggle({
                         miniGameRemote:InvokeServer(x, y)
                         task.wait(1.3)
                         finishRemote:FireServer()
+                        
+                        fishCaught = fishCaught + 1
                     end)
                     task.wait(autoRecastDelay)
                 end
             end)
+        else
+            NotifyInfo("Auto Fish", "Auto fishing stopped by user.")
         end
-    end
+    end, "autofish")
 })
 
 MainTab:CreateToggle({
     Name = "✨ Perfect Cast Mode",
     CurrentValue = false,
-    Callback = function(val)
+    Callback = CreateSafeCallback(function(val)
         perfectCast = val
-        NotifySuccess("Perfect Cast", "Perfect cast mode " .. (val and "enabled" or "disabled") .. "!")
-    end
+        NotifySuccess("Perfect Cast", "Perfect cast mode " .. (val and "activated" or "deactivated") .. "!")
+    end, "perfectcast")
 })
 
 MainTab:CreateSlider({
@@ -259,173 +204,20 @@ MainTab:CreateSlider({
     Range = {0.5, 5},
     Increment = 0.1,
     CurrentValue = autoRecastDelay,
-    Suffix = "seconds",
     Callback = function(val)
         autoRecastDelay = val
     end
 })
 
-MainTab:CreateSection({
-    Name = "💰 Auto Selling System",
-    Icon = "dollar-sign",
-    Side = "Left"
-})
-ShopTab:CreateSection({
-    Name = "🎣 Premium Fishing Rods",
-    Icon = "zap",
-    Side = "Left"
-})
-
-ShopTab:CreateParagraph({
-    Title = "BANGCODE Premium Rods",
-    Content = "Professional fishing rods with enhanced stats and performance specifications."
-})
-
-local rods = {
-    { Name = "Luck Rod", Price = "350 Coins", ID = 79, Desc = "Luck: 50% | Speed: 2% | Weight: 15 kg" },
-    { Name = "Carbon Rod", Price = "900 Coins", ID = 76, Desc = "Luck: 30% | Speed: 4% | Weight: 20 kg" },
-    { Name = "Grass Rod", Price = "1.50k Coins", ID = 85, Desc = "Luck: 55% | Speed: 5% | Weight: 250 kg" },
-    { Name = "Demascus Rod", Price = "3k Coins", ID = 77, Desc = "Luck: 80% | Speed: 4% | Weight: 400 kg" },
-    { Name = "Ice Rod", Price = "5k Coins", ID = 78, Desc = "Luck: 60% | Speed: 7% | Weight: 750 kg" },
-    { Name = "Lucky Rod", Price = "15k Coins", ID = 4, Desc = "Luck: 130% | Speed: 7% | Weight: 5k kg" },
-    { Name = "Midnight Rod", Price = "50k Coins", ID = 80, Desc = "Luck: 100% | Speed: 10% | Weight: 10k kg" },
-    { Name = "Steampunk Rod", Price = "215k Coins", ID = 6, Desc = "Luck: 175% | Speed: 19% | Weight: 25k kg" },
-    { Name = "Chrome Rod", Price = "437k Coins", ID = 7, Desc = "Luck: 229% | Speed: 23% | Weight: 250k kg" },
-    { Name = "Astral Rod", Price = "1M Coins", ID = 5, Desc = "Luck: 350% | Speed: 43% | Weight: 550k kg" }
-}
-
-for _, rod in ipairs(rods) do
-    ShopTab:CreateButton({
-        Name = rod.Name .. " (" .. rod.Price .. ")",
-        Callback = function()
-            pcall(function()
-                replicatedStorage.Packages._Index["sleitnick_net@0.2.0"].net["RF/PurchaseFishingRod"]:InvokeServer(rod.ID)
-                Rayfield:Notify({
-                    Title = "🔥 BANGCODE - Rod Purchase",
-                    Content = "Successfully bought " .. rod.Name .. "!\n" .. rod.Desc,
-                    Duration = 3
-                })
-            end)
-        end
-    })
-end
-
-ShopTab:CreateSection({
-    Name = "🌤️ Weather Events",
-    Icon = "cloud",
-    Side = "Left"
-})
-
-ShopTab:CreateParagraph({
-    Title = "BANGCODE Weather Control",
-    Content = "Professional weather events to enhance your fishing experience with special effects and bonuses."
-})
-
-local autoBuyWeather = false
-
-ShopTab:CreateToggle({
-    Name = "🌀 Auto Buy All Weather",
-    CurrentValue = false,
-    Flag = "AutoBuyWeatherToggle",
-    Callback = function(Value)
-        autoBuyWeather = Value
-        if Value then
-            Rayfield:Notify({
-                Title = "🔥 BANGCODE - Auto Weather",
-                Content = "Started auto buying all weather events",
-                Duration = 3
-            })
-
-            task.spawn(function()
-                while autoBuyWeather do
-                    for _, w in ipairs(weathers) do
-                        pcall(function()
-                            replicatedStorage.Packages._Index["sleitnick_net@0.2.0"].net["RF/PurchaseWeatherEvent"]:InvokeServer(w.Name)
-                        end)
-                        task.wait(1.5)
-                    end
-                    task.wait(10)
-                end
-            end)
-        else
-            Rayfield:Notify({
-                Title = "🔥 BANGCODE - Auto Weather",
-                Content = "Stopped auto buying weather events",
-                Duration = 2
-            })
-        end
-    end
-})
-local weathers = {
-    { Name = "Wind", Price = "10k Coins", Desc = "Increases Rod Speed" },
-    { Name = "Snow", Price = "15k Coins", Desc = "Adds Frozen Mutations" },
-    { Name = "Cloudy", Price = "20k Coins", Desc = "Increases Luck" },
-    { Name = "Storm", Price = "35k Coins", Desc = "Increase Rod Speed And Luck" },
-    { Name = "Shark Hunt", Price = "300k Coins", Desc = "Shark Hunt" }
-}
-
-for _, w in ipairs(weathers) do
-    ShopTab:CreateButton({
-        Name = w.Name .. " (" .. w.Price .. ")",
-        Callback = function()
-            pcall(function()
-                replicatedStorage.Packages._Index["sleitnick_net@0.2.0"].net["RF/PurchaseWeatherEvent"]:InvokeServer(w.Name)
-                Rayfield:Notify({
-                    Title = "🔥 BANGCODE - Weather Event",
-                    Content = "Successfully triggered " .. w.Name .. " weather!\n" .. w.Desc,
-                    Duration = 3
-                })
-            end)
-        end
-    })
-end
-
-
-
-
-ShopTab:CreateSection({
-    Name = "🪱 Premium Fishing Baits",
-    Icon = "target",
-    Side = "Left"
-})
-
-ShopTab:CreateParagraph({
-    Title = "BANGCODE Premium Baits",
-    Content = "Professional baits to maximize fishing luck and unlock special effects for enhanced performance."
-})
-
-local baits = {
-    { Name = "Topwater Bait", Price = "100 Coins", ID = 10, Desc = "Luck: 8%" },
-    { Name = "Luck Bait", Price = "1k Coins", ID = 2, Desc = "Luck: 10%" },
-    { Name = "Midnight Bait", Price = "3k Coins", ID = 3, Desc = "Luck: 20%" },
-    { Name = "Chroma Bait", Price = "290k Coins", ID = 6, Desc = "Luck: 100%" },
-    { Name = "Dark Mater Bait", Price = "630k Coins", ID = 8, Desc = "Luck: 175%" },
-    { Name = "Corrupt Bait", Price = "1.15M Coins", ID = 15, Desc = "Luck: 200% | Mutation Chance: 10% | Shiny Chance: 10%" }
-}
-
-for _, bait in ipairs(baits) do
-    ShopTab:CreateButton({
-        Name = bait.Name .. " (" .. bait.Price .. ")",
-        Callback = function()
-            pcall(function()
-                replicatedStorage.Packages._Index["sleitnick_net@0.2.0"].net["RF/PurchaseBait"]:InvokeServer(bait.ID)
-                Rayfield:Notify({
-                    Title = "🔥 BANGCODE - Bait Purchase",
-                    Content = "Successfully bought " .. bait.Name .. "!\n" .. bait.Desc,
-                    Duration = 3
-                })
-            end)
-        end
-    })
-end
-
+-- Auto Sell Section
 local AutoSellToggle = MainTab:CreateToggle({
-    Name = "💰 Auto Sell Items",
+    Name = "💰 Auto Sell Items (Teleport to Alex)",
     CurrentValue = false,
     Flag = "AutoSell",
-    Callback = function(value)
+    Callback = CreateSafeCallback(function(value)
         featureState.AutoSell = value
         if value then
+            NotifySuccess("Auto Sell", "BANGCODE auto sell activated! Professional teleportation system enabled.")
             task.spawn(function()
                 while featureState.AutoSell and player do
                     pcall(function()
@@ -435,12 +227,7 @@ local AutoSellToggle = MainTab:CreateToggle({
                         local alexNpc = npcContainer and npcContainer:FindFirstChild("Alex")
 
                         if not alexNpc then
-                            Rayfield:Notify({
-                                Title = "🔥 BANGCODE - Error",
-                                Content = "NPC 'Alex' tidak ditemukan!",
-                                Duration = 5,
-                                Image = 4483362458
-                            })
+                            NotifyError("Error", "NPC 'Alex' not found! Auto sell disabled.")
                             featureState.AutoSell = false
                             AutoSellToggle:Set(false)
                             return
@@ -456,55 +243,243 @@ local AutoSellToggle = MainTab:CreateToggle({
                         task.wait(1)
 
                         player.Character.HumanoidRootPart.CFrame = originalCFrame
+                        itemsSold = itemsSold + 1
                     end)
                     task.wait(20)
                 end
             end)
+        else
+            NotifyInfo("Auto Sell", "Auto sell system disabled.")
         end
-    end
+    end, "autosell")
 })
 
--- Toggle logic
-local blockUpdateOxygen = false
-
-PlayerTab:CreateToggle({
-    Name = "Unlimited Oxygen",
-    CurrentValue = false,
-    Flag = "BlockUpdateOxygen",
-    Callback = function(value)
-        blockUpdateOxygen = value
-        Rayfield:Notify({
-            Title = "🔥 BANGCODE - Unlimited Oxygen",
-            Content = value and "Unlimited oxygen activated!" or "Unlimited oxygen deactivated!",
-            Duration = 3,
-        })
-    end,
+MainTab:CreateButton({
+    Name = "📊 Show Session Stats",
+    Callback = CreateSafeCallback(function()
+        local stats = string.format("BANGCODE Session Statistics:\n\n🎣 Fish Caught: %d\n💰 Items Sold: %d\n⚡ Auto Fish: %s\n🛒 Auto Sell: %s", 
+            fishCaught, itemsSold, 
+            autofish and "Active" or "Inactive",
+            featureState.AutoSell and "Active" or "Inactive"
+        )
+        NotifyInfo("Session Stats", stats)
+    end, "session_stats")
 })
 
--- Hook FireServer
-local oldNamecall
-oldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(self, ...)
-    local method = getnamecallmethod()
-    local args = {...}
+-- ═══════════════════════════════════════════════════════════════
+-- 🛒 SHOP TAB - Comprehensive Shopping System
+-- ═══════════════════════════════════════════════════════════════
 
-    if method == "FireServer" and tostring(self) == "URE/UpdateOxygen" and blockUpdateOxygen then
-        warn("Tahan Napas Bang")
-        return nil -- prevent call
-    end
+ShopTab:CreateParagraph({
+    Title = "🛒 BANGCODE Premium Shop",
+    Content = "Professional shopping system with organized categories and enhanced user experience."
+})
 
-    return oldNamecall(self, unpack(args))
-end))
+-- Fishing Rods Section
+ShopTab:CreateParagraph({
+    Title = "🎣 Premium Fishing Rods",
+    Content = "Select a rod to purchase using coins."
+})
 
--- Player Tab
+local rods = {
+    { Name = "Luck Rod", Price = "350 Coins", ID = 79, Desc = "Luck: 50% | Speed: 2% | Weight: 15 kg" },
+    { Name = "Carbon Rod", Price = "900 Coins", ID = 76, Desc = "Luck: 30% | Speed: 4% | Weight: 20 kg" },
+    { Name = "Grass Rod", Price = "1.50k Coins", ID = 85, Desc = "Luck: 55% | Speed: 5% | Weight: 250 kg" },
+    { Name = "Damascus Rod", Price = "3k Coins", ID = 77, Desc = "Luck: 80% | Speed: 4% | Weight: 400 kg" },
+    { Name = "Ice Rod", Price = "5k Coins", ID = 78, Desc = "Luck: 60% | Speed: 7% | Weight: 750 kg" },
+    { Name = "Lucky Rod", Price = "15k Coins", ID = 4, Desc = "Luck: 130% | Speed: 7% | Weight: 5k kg" },
+    { Name = "Midnight Rod", Price = "50k Coins", ID = 80, Desc = "Luck: 100% | Speed: 10% | Weight: 10k kg" },
+    { Name = "Steampunk Rod", Price = "215k Coins", ID = 6, Desc = "Luck: 175% | Speed: 19% | Weight: 25k kg" },
+    { Name = "Chrome Rod", Price = "437k Coins", ID = 7, Desc = "Luck: 229% | Speed: 23% | Weight: 250k kg" },
+    { Name = "Astral Rod", Price = "1M Coins", ID = 5, Desc = "Luck: 350% | Speed: 43% | Weight: 550k kg" }
+}
+
+for _, rod in ipairs(rods) do
+    ShopTab:CreateButton({
+        Name = rod.Name .. " (" .. rod.Price .. ")",
+        Callback = CreateSafeCallback(function()
+            pcall(function()
+                replicatedStorage.Packages._Index["sleitnick_net@0.2.0"].net["RF/PurchaseFishingRod"]:InvokeServer(rod.ID)
+                NotifySuccess("Rod Purchase", "Successfully bought " .. rod.Name .. "! " .. rod.Desc)
+            end)
+        end, "rod_" .. rod.ID)
+    })
+end
+
+-- Fishing Baits Section
+ShopTab:CreateParagraph({
+    Title = "🪱 Premium Fishing Baits",
+    Content = "Buy bait to enhance fishing luck and effects."
+})
+
+local baits = {
+    { Name = "Topwater Bait", Price = "100 Coins", ID = 10, Desc = "Luck: 8%" },
+    { Name = "Luck Bait", Price = "1k Coins", ID = 2, Desc = "Luck: 10%" },
+    { Name = "Midnight Bait", Price = "3k Coins", ID = 3, Desc = "Luck: 20%" },
+    { Name = "Chroma Bait", Price = "290k Coins", ID = 6, Desc = "Luck: 100%" },
+    { Name = "Dark Matter Bait", Price = "630k Coins", ID = 8, Desc = "Luck: 175%" },
+    { Name = "Corrupt Bait", Price = "1.15M Coins", ID = 15, Desc = "Luck: 200% | Mutation: 10% | Shiny: 10%" }
+}
+
+for _, bait in ipairs(baits) do
+    ShopTab:CreateButton({
+        Name = bait.Name .. " (" .. bait.Price .. ")",
+        Callback = CreateSafeCallback(function()
+            pcall(function()
+                replicatedStorage.Packages._Index["sleitnick_net@0.2.0"].net["RF/PurchaseBait"]:InvokeServer(bait.ID)
+                NotifySuccess("Bait Purchase", "Successfully bought " .. bait.Name .. "! " .. bait.Desc)
+            end)
+        end, "bait_" .. bait.ID)
+    })
+end
+
+-- Weather Events Section
+ShopTab:CreateParagraph({
+    Title = "🌤️ Weather Events",
+    Content = "Trigger special weather events to enhance fishing."
+})
+
+local weathers = {
+    { Name = "Wind", Price = "10k Coins", Desc = "Increases Rod Speed" },
+    { Name = "Snow", Price = "15k Coins", Desc = "Adds Frozen Mutations" },
+    { Name = "Cloudy", Price = "20k Coins", Desc = "Increases Luck" },
+    { Name = "Storm", Price = "35k Coins", Desc = "Increase Rod Speed And Luck" },
+    { Name = "Shark Hunt", Price = "300k Coins", Desc = "Shark Hunt Event" }
+}
+
+for _, w in ipairs(weathers) do
+    ShopTab:CreateButton({
+        Name = w.Name .. " (" .. w.Price .. ")",
+        Callback = CreateSafeCallback(function()
+            pcall(function()
+                replicatedStorage.Packages._Index["sleitnick_net@0.2.0"].net["RF/PurchaseWeatherEvent"]:InvokeServer(w.Name)
+                NotifySuccess("Weather Event", "Successfully triggered " .. w.Name .. "! " .. w.Desc)
+            end)
+        end, "weather_" .. w.Name)
+    })
+end
+
+-- Boats Section
+ShopTab:CreateParagraph({
+    Title = "🛥️ Premium Boats",
+    Content = "Spawn professional boats with enhanced stats."
+})
+
+local standard_boats = {
+    { Name = "Small Boat", ID = 1, Desc = "Acceleration: 160% | Passengers: 3 | Top Speed: 120%" },
+    { Name = "Kayak", ID = 2, Desc = "Acceleration: 180% | Passengers: 1 | Top Speed: 155%" },
+    { Name = "Jetski", ID = 3, Desc = "Acceleration: 240% | Passengers: 2 | Top Speed: 280%" },
+    { Name = "Highfield Boat", ID = 4, Desc = "Acceleration: 180% | Passengers: 3 | Top Speed: 180%" },
+    { Name = "Speed Boat", ID = 5, Desc = "Acceleration: 200% | Passengers: 4 | Top Speed: 220%" },
+    { Name = "Fishing Boat", ID = 6, Desc = "Acceleration: 180% | Passengers: 8 | Top Speed: 230%" },
+    { Name = "Mini Yacht", ID = 14, Desc = "Acceleration: 140% | Passengers: 10 | Top Speed: 290%" },
+    { Name = "Hyper Boat", ID = 7, Desc = "Acceleration: 240% | Passengers: 7 | Top Speed: 400%" }
+}
+
+for _, boat in ipairs(standard_boats) do
+    ShopTab:CreateButton({
+        Name = "🛥️ " .. boat.Name,
+        Callback = CreateSafeCallback(function()
+            pcall(function()
+                replicatedStorage.Packages._Index["sleitnick_net@0.2.0"].net["RF/DespawnBoat"]:InvokeServer()
+                task.wait(2)
+                replicatedStorage.Packages._Index["sleitnick_net@0.2.0"].net["RF/SpawnBoat"]:InvokeServer(boat.ID)
+                NotifySuccess("Boat Spawn", "Successfully spawned " .. boat.Name .. "! " .. boat.Desc)
+            end)
+        end, "boat_" .. boat.ID)
+    })
+end
+
+-- ═══════════════════════════════════════════════════════════════
+-- 🌍 TELEPORT TAB - Advanced Teleportation Network
+-- ═══════════════════════════════════════════════════════════════
+
+TeleportTab:CreateParagraph({
+    Title = "🌍 BANGCODE Teleport System",
+    Content = "Professional teleportation with enhanced safety and user experience."
+})
+
+-- Islands Section
+TeleportTab:CreateParagraph({
+    Title = "🏝️ Islands & Locations",
+    Content = "Quick teleport to all major islands and locations."
+})
+
+local islandCoords = {
+    ["01"] = { name = "Weather Machine", position = Vector3.new(-1471, -3, 1929) },
+    ["02"] = { name = "Esoteric Depths", position = Vector3.new(3157, -1303, 1439) },
+    ["03"] = { name = "Tropical Grove", position = Vector3.new(-2038, 3, 3650) },
+    ["04"] = { name = "Stingray Shores", position = Vector3.new(-32, 4, 2773) },
+    ["05"] = { name = "Kohana Volcano", position = Vector3.new(-519, 24, 189) },
+    ["06"] = { name = "Coral Reefs", position = Vector3.new(-3095, 1, 2177) },
+    ["07"] = { name = "Crater Island", position = Vector3.new(968, 1, 4854) },
+    ["08"] = { name = "Kohana", position = Vector3.new(-658, 3, 719) },
+    ["09"] = { name = "Winter Fest", position = Vector3.new(1611, 4, 3280) },
+    ["10"] = { name = "Esoteric Island", position = Vector3.new(1987, 4, 1400) }
+}
+
+for _, data in pairs(islandCoords) do
+    TeleportTab:CreateButton({
+        Name = data.name,
+        Callback = CreateSafeCallback(function()
+            local char = Workspace.Characters:FindFirstChild(LocalPlayer.Name)
+            local hrp = char and char:FindFirstChild("HumanoidRootPart")
+            if hrp then
+                hrp.CFrame = CFrame.new(data.position + Vector3.new(0, 5, 0))
+                NotifySuccess("Teleported!", "Successfully teleported to " .. data.name .. "!")
+            else
+                NotifyError("Teleport Failed", "Character or HumanoidRootPart not found!")
+            end
+        end, "island_" .. data.name)
+    })
+end
+
+-- NPCs Section
+TeleportTab:CreateParagraph({
+    Title = "👥 NPCs & Shops",
+    Content = "Quick teleport to all important NPCs and shop locations."
+})
+
+local npcFolder = ReplicatedStorage:WaitForChild("NPC")
+for _, npc in ipairs(npcFolder:GetChildren()) do
+    TeleportTab:CreateButton({
+        Name = "Teleport to " .. npc.Name,
+        Callback = CreateSafeCallback(function()
+            local npcCandidates = Workspace:GetDescendants()
+            for _, descendant in ipairs(npcCandidates) do
+                if descendant.Name == npc.Name and descendant:FindFirstChild("HumanoidRootPart") then
+                    local myChar = LocalPlayer.Character
+                    local myHRP = myChar and myChar:FindFirstChild("HumanoidRootPart")
+                    if myHRP then
+                        myHRP.CFrame = descendant.HumanoidRootPart.CFrame + Vector3.new(0, 5, 0)
+                        NotifySuccess("Teleport Success", "Successfully teleported to " .. npc.Name .. "!")
+                        return
+                    end
+                end
+            end
+            NotifyError("Teleport Failed", "NPC " .. npc.Name .. " not found in workspace!")
+        end, "npc_" .. npc.Name)
+    })
+end
+
+-- ═══════════════════════════════════════════════════════════════
+-- 👤 PLAYER TAB - Character Enhancement
+-- ═══════════════════════════════════════════════════════════════
+
+PlayerTab:CreateParagraph({
+    Title = "👤 BANGCODE Player Enhancement",
+    Content = "Professional character modifications with safety features."
+})
+
+-- Movement Section
 PlayerTab:CreateToggle({
-    Name = "Infinity Jump",
+    Name = "∞ Infinite Jump",
     CurrentValue = false,
-    Callback = function(val)
+    Callback = CreateSafeCallback(function(val)
         ijump = val
-    end
+        NotifySuccess("Infinite Jump", "Infinite jump " .. (val and "activated" or "deactivated") .. "!")
+    end, "infinite_jump")
 })
-
-
 
 UserInputService.JumpRequest:Connect(function()
     if ijump and LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
@@ -512,72 +487,8 @@ UserInputService.JumpRequest:Connect(function()
     end
 end)
 
-do
-    PlayerTab:CreateParagraph({
-        Title = "🛒 BANGCODE Teleport to Shops",
-        Content = "Professional teleportation to all important shop NPCs."
-    })
-    local shop_npcs = {
-        { Name = "Boats Shop", Path = "Boat Expert" },
-        { Name = "Rod Shop", Path = "Joe" },
-        { Name = "Bobber Shop", Path = "Seth" }
-    }
-
-    for _, npc_data in ipairs(shop_npcs) do
-        PlayerTab:CreateButton({
-            Name = npc_data.Name,
-            Callback = function()
-                local npc = game:GetService("ReplicatedStorage"):FindFirstChild("NPC"):FindFirstChild(npc_data.Path)
-                local char = game:GetService("Players").LocalPlayer.Character
-                if npc and char and char:FindFirstChild("HumanoidRootPart") then
-                    char:PivotTo(npc:GetPivot())
-                    Rayfield:Notify({
-                        Title = "🔥 BANGCODE - Teleported",
-                        Content = "Successfully teleported to " .. npc_data.Name,
-                        Duration = 3,
-                        Image = 4483362458
-                    })
-                else
-                    Rayfield:Notify({
-                        Title = "🔥 BANGCODE - Error",
-                        Content = "NPC or Character not found.",
-                        Duration = 3,
-                        Image = 4483362458
-                    })
-                end
-            end,
-        })
-    end
-
-    PlayerTab:CreateButton({
-        Name = "Weather Machine",
-        Callback = function()
-            local weather = workspace:FindFirstChild("!!!! ISLAND LOCATIONS !!!!"):FindFirstChild("Weather Machine")
-            local char = game:GetService("Players").LocalPlayer.Character
-            if weather and char and char:FindFirstChild("HumanoidRootPart") then
-                char:PivotTo(CFrame.new(weather.Position))
-                Rayfield:Notify({
-                    Title = "🔥 BANGCODE - Teleported",
-                    Content = "Successfully teleported to Weather Machine",
-                    Duration = 3,
-                    Image = 4483362458
-                })
-            else
-                Rayfield:Notify({
-                    Title = "🔥 BANGCODE - Error",
-                    Content = "Weather Machine or Character not found.",
-                    Duration = 3,
-                    Image = 4483362458
-                })
-            end
-        end,
-    })
-end
-
-
-
 PlayerTab:CreateSlider({
-    Name = "WalkSpeed",
+    Name = "🏃‍♂️ Walk Speed",
     Range = {16, 150},
     Increment = 1,
     CurrentValue = 16,
@@ -588,7 +499,7 @@ PlayerTab:CreateSlider({
 })
 
 PlayerTab:CreateSlider({
-    Name = "Jump Power",
+    Name = "🦘 Jump Power",
     Range = {50, 500},
     Increment = 10,
     CurrentValue = 35,
@@ -601,117 +512,54 @@ PlayerTab:CreateSlider({
     end
 })
 
--- Islands Tab
-local islandCoords = {
-    ["01"] = { name = "Weather Machine", position = Vector3.new(-1471, -3, 1929) },
-    ["02"] = { name = "Esoteric Depths", position = Vector3.new(3157, -1303, 1439) },
-    ["03"] = { name = "Tropical Grove", position = Vector3.new(-2038, 3, 3650) },
-    ["04"] = { name = "Stingray Shores", position = Vector3.new(-32, 4, 2773) },
-    ["05"] = { name = "Kohana Volcano", position = Vector3.new(-519, 24, 189) },
-    ["06"] = { name = "Coral Reefs", position = Vector3.new(-3095, 1, 2177) },
-    ["07"] = { name = "Crater Island", position = Vector3.new(968, 1, 4854) },
-    ["08"] = { name = "Kohana", position = Vector3.new(-658, 3, 719) },
-    ["09"] = { name = "Winter Fest", position = Vector3.new(1611, 4, 3280) },
-    ["10"] = { name = "Isoteric Island", position = Vector3.new(1987, 4, 1400) },
-["11"] = { name = "Lost Isle", position = Vector3.new(-3670.30078125, -113.00000762939453, -1128.0589599609375)},
-["12"] = { name = "Lost Isle [Lost Shore]", position = Vector3.new(-3697, 97, -932)},
-["13"] = { name = "Lost Isle [Sisyphus]", position = Vector3.new(-3719.850830078125, -113.00000762939453, -958.6303100585938)},
+-- Unlimited Oxygen Feature
+local blockUpdateOxygen = false
 
-["14"] = { name = "Lost Isle [Treasure Hall]", position = Vector3.new(-3652, -298.25, -1469)},
-["15"] = { name = "Lost Isle [Treasure Room]", position = Vector3.new(-3652, -283.5, -1651.5)}
-}
-
--- ═══════════════════════════════════════════════════════════════
--- 🌍 TELEPORT TAB - Advanced Teleportation Network
--- ═══════════════════════════════════════════════════════════════
-
-TeleportTab:CreateSection({
-    Name = "🏝️ Islands & Locations",
-    Icon = "map-pin",
-    Side = "Left"
+PlayerTab:CreateToggle({
+    Name = "🫁 Unlimited Oxygen",
+    CurrentValue = false,
+    Flag = "BlockUpdateOxygen",
+    Callback = CreateSafeCallback(function(value)
+        blockUpdateOxygen = value
+        NotifySuccess("Oxygen System", "Unlimited oxygen " .. (value and "activated" or "deactivated") .. "!")
+    end, "unlimited_oxygen")
 })
 
-TeleportTab:CreateParagraph({
-    Title = "BANGCODE Teleport Network",
-    Content = "Professional teleportation system with enhanced safety features and instant travel to all major locations."
-})
+-- Hook FireServer for Oxygen
+local oldNamecall
+oldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(self, ...)
+    local method = getnamecallmethod()
+    local args = {...}
 
-for _, data in pairs(islandCoords) do
-    TeleportTab:CreateButton({
-        Name = data.name,
-        Callback = function()
-            local char = Workspace.Characters:FindFirstChild(LocalPlayer.Name)
-            local hrp = char and char:FindFirstChild("HumanoidRootPart")
-            if hrp then
-                hrp.CFrame = CFrame.new(data.position + Vector3.new(0, 5, 0))
-                NotifySuccess("Teleported!", "Successfully teleported to " .. data.name)
-            else
-                NotifyError("Teleport Failed", "Character or HumanoidRootPart not found!")
-            end
-        end
-    })
-end 
-TeleportTab:CreateSection({
-    Name = "👥 NPCs & Shops",
-    Icon = "user",
-    Side = "Left"
-})
+    if method == "FireServer" and tostring(self) == "URE/UpdateOxygen" and blockUpdateOxygen then
+        return nil -- prevent call
+    end
 
-TeleportTab:CreateParagraph({
-    Title = "NPC Teleportation",
-    Content = "Quick access to all important NPCs, shops, and interactive characters with intelligent location finding."
-})
-
-local npcFolder = ReplicatedStorage:WaitForChild("NPC")
-for _, npc in ipairs(npcFolder:GetChildren()) do
-	TeleportTab:CreateButton({
-		Name = npc.Name,
-		Callback = function()
-			local npcCandidates = Workspace:GetDescendants()
-			for _, descendant in ipairs(npcCandidates) do
-				if descendant.Name == npc.Name and descendant:FindFirstChild("HumanoidRootPart") then
-					local myChar = LocalPlayer.Character
-					local myHRP = myChar and myChar:FindFirstChild("HumanoidRootPart")
-					if myHRP then
-						myHRP.CFrame = descendant.HumanoidRootPart.CFrame + Vector3.new(0, 5, 0)
-						NotifySuccess("Teleport Success", "Successfully teleported to " .. npc.Name .. "!")
-						return
-					end
-				end
-			end
-			NotifyError("Teleport Failed", "NPC " .. npc.Name .. " not found in workspace!")
-		end
-	})
-end
+    return oldNamecall(self, unpack(args))
+end))
 
 -- ═══════════════════════════════════════════════════════════════
 -- ⚙️ UTILITY TAB - System Management & Settings
 -- ═══════════════════════════════════════════════════════════════
 
-UtilityTab:CreateSection({
-    Name = "🌐 Server Management",
-    Icon = "server",
-    Side = "Left"
-})
-
 UtilityTab:CreateParagraph({
-    Title = "BANGCODE Server Tools",
-    Content = "Professional server management tools with intelligent server selection and seamless transitions."
+    Title = "⚙️ BANGCODE Utility System",
+    Content = "Professional system management and utility features."
 })
 
 UtilityTab:CreateButton({ 
-    Name = "🔄 Rejoin Current Server", 
-    Callback = function() 
-        NotifySuccess("Server Management", "Rejoining current server...")
+    Name = "🔄 Rejoin Server", 
+    Callback = CreateSafeCallback(function() 
+        NotifyInfo("Server", "Rejoining current server...")
         task.wait(1)
         TeleportService:Teleport(game.PlaceId, LocalPlayer) 
-    end 
+    end, "rejoin_server")
 })
 
 UtilityTab:CreateButton({ 
-    Name = "🎲 Smart Server Hop", 
-    Callback = function()
-        NotifySuccess("Server Hop", "Finding optimal server with better performance...")
+    Name = "🎲 Server Hop", 
+    Callback = CreateSafeCallback(function()
+        NotifyInfo("Server Hop", "Finding new server with better performance...")
         local placeId = game.PlaceId
         local servers, cursor = {}, ""
         repeat
@@ -736,115 +584,48 @@ UtilityTab:CreateButton({
             NotifySuccess("Server Hop", "Found optimal server! Connecting...")
             TeleportService:TeleportToPlaceInstance(placeId, targetServer, LocalPlayer)
         else
-            NotifyError("Server Hop Failed", "No available servers found! Please try again later.")
+            NotifyError("Server Hop", "No available servers found! Try again later.")
         end
-    end 
-})
-
-UtilityTab:CreateSection({
-    Name = "🔧 Script Management",
-    Icon = "tool",
-    Side = "Left"
+    end, "server_hop")
 })
 
 UtilityTab:CreateButton({ 
-    Name = "🗑️ Unload BANGCODE Script", 
-    Callback = function()
-        Rayfield:Notify({ 
-            Title = "🔥 BANGCODE - Thank You!", 
-            Content = "Thank you for using BANGCODE Fish It Pro!\n\nScript will unload in 3 seconds...\nFollow @_bangicoo for more premium scripts!", 
-            Duration = 4, 
-            Image = "circle-check" 
-        })
+    Name = "🗑️ Unload Script", 
+    Callback = CreateSafeCallback(function()
+        NotifyInfo("BANGCODE", "Thank you for using BANGCODE Fish It Pro! Script will unload in 3 seconds...")
         task.wait(3)
         if game:GetService("CoreGui"):FindFirstChild("Rayfield") then
             game:GetService("CoreGui").Rayfield:Destroy()
         end
-    end 
+    end, "unload_script")
 })
 
--- 🔄 Ambil semua anak dari workspace.Props dan filter hanya yang berupa Model atau BasePart
+-- Welcome Messages
+task.spawn(function()
+    task.wait(2)
+    NotifySuccess("Welcome!", "🔥 BANGCODE Fish It Pro v2.0 loaded successfully!\n\nPremium features activated:\n• Anti-Ghost Touch System ✅\n• Enhanced UI/UX Design ✅\n• Professional Error Handling ✅\n\n🎯 Ready to dominate Fish It!")
+    
+    task.wait(4)
+    NotifyInfo("Follow BANGCODE!", "📷 Instagram: @_bangicoo\n💻 GitHub: codeico\n\n🔥 Follow us for updates, support, and exclusive beta access to new scripts!")
+end)
 
-TeleportTab:CreateSection({
-    Name = "🎪 Events & Props",
-    Icon = "zap",
-    Side = "Left"
-})
+-- Console Branding
+print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+print("🔥 BANGCODE FISH IT PRO V2.0 🔥")
+print("🎯 Premium Script with Enhanced UI/UX & Anti-Ghost Touch")
+print("📷 Instagram: @_bangicoo | 💻 GitHub: codeico")
+print("💎 Professional Quality • Trusted by Thousands")
+print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 
-local function createEventButtons()
-    local props = Workspace:FindFirstChild("Props")
-    if props then
-        for _, child in pairs(props:GetChildren()) do
-            if child:IsA("Model") or child:IsA("BasePart") then
-                local eventName = child.Name
-
-                TeleportTab:CreateButton({
-                    Name = eventName,
-                    Callback = function()
-                        local character = Workspace.Characters:FindFirstChild(LocalPlayer.Name)
-                        local hrp = character and character:FindFirstChild("HumanoidRootPart")
-                        local pos = nil
-
-                        if child:IsA("Model") then
-                            if child.PrimaryPart then
-                                pos = child.PrimaryPart.Position
-                            else
-                                local part = child:FindFirstChildWhichIsA("BasePart")
-                                if part then
-                                    pos = part.Position
-                                end
-                            end
-                        elseif child:IsA("BasePart") then
-                            pos = child.Position
-                        end
-
-                        if pos and hrp then
-                            hrp.CFrame = CFrame.new(pos + Vector3.new(0, 5, 0))
-                            Rayfield:Notify({
-                                Title = "🔥 BANGCODE - Teleported",
-                                Content = "Successfully teleported to: " .. eventName,
-                                Duration = 4
-                            })
-                        else
-                            Rayfield:Notify({
-                                Title = "🔥 BANGCODE - Error",
-                                Content = "Failed to locate valid part for: " .. eventName,
-                                Duration = 4
-                            })
-                        end
-                    end
-                })
-            end
-        end
+-- Performance Enhancements (from original script)
+pcall(function()
+    -- Enhance fishing rod modifiers
+    local Modifiers = require(game:GetService("ReplicatedStorage").Shared.FishingRodModifiers)
+    for key in pairs(Modifiers) do
+        Modifiers[key] = 999999999
     end
-end
 
-TeleportTab:CreateButton({
-    Name = "🔄 Refresh Events List",
-    Callback = function()
-        createEventButtons()
-        Rayfield:Notify({
-            Title = "🔥 BANGCODE - Refreshed",
-            Content = "Event list has been successfully refreshed.",
-            Duration = 3
-        })
-    end
-})
-
--- Panggil pertama kali saat tab dibuka
-createEventButtons()
-
--- This section is now handled by the createEventButtons function above
--- Removing duplicate code that references undefined EventTab
-
--- Mengubah semua modifier fishing rod menjadi 99999
-local Modifiers = require(game:GetService("ReplicatedStorage").Shared.FishingRodModifiers)
-for key in pairs(Modifiers) do
-    Modifiers[key] = 999999999
-end
-
--- Memaksa efek "Luck Bait"
-local bait = require(game:GetService("ReplicatedStorage").Baits["Luck Bait"])
-bait.Luck = 999999999
-
-
+    -- Enhance luck bait
+    local bait = require(game:GetService("ReplicatedStorage").Baits["Luck Bait"])
+    bait.Luck = 999999999
+end)
