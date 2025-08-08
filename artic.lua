@@ -6,10 +6,10 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 -- Window Setup
 local Window = Rayfield:CreateWindow({
-   Name = "Expedition Antarctica Script",
+   Name = "Expedition Antarctica Script - BANGCODE",
    Icon = 0,
    LoadingTitle = "Welcome",
-   LoadingSubtitle = "by Joseph",
+   LoadingSubtitle = "by BANGCODE",
    Theme = "Default",
    DisableRayfieldPrompts = false,
    DisableBuildWarnings = false,
