@@ -95,7 +95,7 @@ end
 
 -- === UPDATED TELEPORT COORDINATES === --
 local Camps = {
-    ["Camp 1"] = CFrame.new(-4236.6, 0, 723.6),
+    ["Camp 1"] = CFrame.new( -(4236.6 -(114 + 404)), 227.4, 723.6 -(106 + 382) ),
     ["Camp 2"] = CFrame.new(1789.7, 0, -137),
     ["Camp 3"] = CFrame.new(5892.1, 0, -20.3),
     ["Camp 4"] = CFrame.new(8992.2, 0, 102.6),
