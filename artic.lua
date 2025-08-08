@@ -6,10 +6,10 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 -- Window Setup
 local Window = Rayfield:CreateWindow({
-   Name = "Expedition Antarctica Script",
+   Name = "Expedition Antarctica Script - BANGCODE",
    Icon = 0,
    LoadingTitle = "Welcome",
-   LoadingSubtitle = "by Joseph",
+   LoadingSubtitle = "by BANGCODE's",
    Theme = "Default",
    DisableRayfieldPrompts = false,
    DisableBuildWarnings = false,
@@ -95,11 +95,11 @@ end
 
 -- === UPDATED TELEPORT COORDINATES === --
 local Camps = {
-    ["Camp 1"] = CFrame.new(-3730.5, 224.8, 227.5),
-    ["Camp 2"] = CFrame.new(1789.7, 107.8, -137),
-    ["Camp 3"] = CFrame.new(5892.1, 323.4, -20.3),
-    ["Camp 4"] = CFrame.new(8992.2, 598, 102.6),
-    ["South Pole"] = CFrame.new(11001.9, 551.5, 103)
+    ["Camp 1"] = CFrame.new(-4236.6, 0, 723.6),
+    ["Camp 2"] = CFrame.new(1789.7, 0, -137),
+    ["Camp 3"] = CFrame.new(5892.1, 0, -20.3),
+    ["Camp 4"] = CFrame.new(8992.2, 0, 102.6),
+    ["South Pole"] = CFrame.new(11001.9, 0, 103)
 }
 
 -- === AUTO CHECKPOINT FARM === --
@@ -177,27 +177,111 @@ MainTab:CreateButton({
     end
 })
 
--- === DISTANCE CHECKER === --
-MainTab:CreateButton({
-    Name = "📏 Check Distance to Camps",
-    Callback = function()
+-- === SPEED AND JUMP CONTROLS === --
+Section:CreateSlider({
+    Name = "🏃 Walk Speed",
+    Range = {1, 200},
+    Increment = 1,
+    CurrentValue = 16,
+    Flag = "WalkSpeed",
+    Callback = function(Value)
+        CurrentSpeed = Value
         local player = game.Players.LocalPlayer
-        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-            local currentPos = player.Character.HumanoidRootPart.Position
-            
-            print("=== DISTANCES TO CAMPS ===")
-            for name, cframe in pairs(Camps) do
-                local campPos = Vector3.new(cframe.X, cframe.Y, cframe.Z)
-                local distance = (currentPos - campPos).Magnitude
-                print(name .. ": " .. string.format("%.1f", distance) .. " studs")
-            end
-            print("==========================")
-            
-            Rayfield:Notify({
-                Title = "Distance Check",
-                Content = "Check console for distances to all camps",
-                Duration = 3
-            })
+        if player.Character and player.Character:FindFirstChild("Humanoid") then
+            player.Character.Humanoid.WalkSpeed = Value
+        end
+        
+        -- Update for future spawns
+        if player.Character then
+            player.Character.Humanoid.WalkSpeed = Value
+        end
+    end
+})
+
+Section:CreateSlider({
+    Name = "🦘 Jump Power", 
+    Range = {1, 300},
+    Increment = 1,
+    CurrentValue = 50,
+    Flag = "JumpPower",
+    Callback = function(Value)
+        CurrentJump = Value
+        local player = game.Players.LocalPlayer
+        if player.Character and player.Character:FindFirstChild("Humanoid") then
+            player.Character.Humanoid.JumpPower = Value
+        end
+        
+        -- Update for future spawns
+        if player.Character then
+            player.Character.Humanoid.JumpPower = Value
+        end
+    end
+})
+
+-- Quick Speed Presets
+Section:CreateButton({
+    Name = "⚡ Speed: Normal (16)",
+    Callback = function()
+        CurrentSpeed = 16
+        local player = game.Players.LocalPlayer
+        if player.Character and player.Character:FindFirstChild("Humanoid") then
+            player.Character.Humanoid.WalkSpeed = 16
+        end
+    end
+})
+
+Section:CreateButton({
+    Name = "🚀 Speed: Fast (50)",
+    Callback = function()
+        CurrentSpeed = 50
+        local player = game.Players.LocalPlayer
+        if player.Character and player.Character:FindFirstChild("Humanoid") then
+            player.Character.Humanoid.WalkSpeed = 50
+        end
+    end
+})
+
+Section:CreateButton({
+    Name = "💨 Speed: Super Fast (100)",
+    Callback = function()
+        CurrentSpeed = 100
+        local player = game.Players.LocalPlayer
+        if player.Character and player.Character:FindFirstChild("Humanoid") then
+            player.Character.Humanoid.WalkSpeed = 100
+        end
+    end
+})
+
+-- Quick Jump Presets
+Section:CreateButton({
+    Name = "🦘 Jump: Normal (50)",
+    Callback = function()
+        CurrentJump = 50
+        local player = game.Players.LocalPlayer
+        if player.Character and player.Character:FindFirstChild("Humanoid") then
+            player.Character.Humanoid.JumpPower = 50
+        end
+    end
+})
+
+Section:CreateButton({
+    Name = "🚁 Jump: High (120)",
+    Callback = function()
+        CurrentJump = 120
+        local player = game.Players.LocalPlayer
+        if player.Character and player.Character:FindFirstChild("Humanoid") then
+            player.Character.Humanoid.JumpPower = 120
+        end
+    end
+})
+
+Section:CreateButton({
+    Name = "🌙 Jump: Moon Jump (200)",
+    Callback = function()
+        CurrentJump = 200
+        local player = game.Players.LocalPlayer
+        if player.Character and player.Character:FindFirstChild("Humanoid") then
+            player.Character.Humanoid.JumpPower = 200
         end
     end
 })
@@ -281,35 +365,81 @@ MainTab:CreateButton({
 })
 
 -- === ADDITIONAL UTILITIES === --
-MiscTab:CreateSlider({
-    Name = "🏃 Walk Speed",
-    Range = {1, 100},
-    Increment = 1,
-    CurrentValue = 16,
-    Flag = "WalkSpeed",
+MiscTab:CreateToggle({
+    Name = "👻 Noclip",
+    CurrentValue = false,
+    Flag = "Noclip",
     Callback = function(Value)
-        CurrentSpeed = Value
-        if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
-            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
+        NoclipActive = Value
+        local player = game.Players.LocalPlayer
+        
+        if Value then
+            -- Enable noclip
+            spawn(function()
+                while NoclipActive do
+                    if player.Character then
+                        for _, part in pairs(player.Character:GetChildren()) do
+                            if part:IsA("BasePart") then
+                                part.CanCollide = false
+                            end
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+        else
+            -- Disable noclip
+            if player.Character then
+                for _, part in pairs(player.Character:GetChildren()) do
+                    if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then
+                        part.CanCollide = true
+                    end
+                end
+            end
         end
     end
 })
 
-MiscTab:CreateSlider({
-    Name = "🦘 Jump Power",
-    Range = {1, 200},
-    Increment = 1,
-    CurrentValue = 50,
-    Flag = "JumpPower",
-    Callback = function(Value)
-        CurrentJump = Value
-        if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
-            game.Players.LocalPlayer.Character.Humanoid.JumpPower = Value
+MiscTab:CreateButton({
+    Name = "🌫️ Remove/Toggle Fog",
+    Callback = function()
+        local lighting = game:GetService("Lighting")
+        
+        if not FogRemoved then
+            -- Remove fog
+            lighting.FogEnd = 100000
+            lighting.FogStart = 0
+            FogRemoved = true
+            Rayfield:Notify({
+                Title = "Fog Removed",
+                Content = "Visibility improved!",
+                Duration = 2
+            })
+        else
+            -- Restore fog (default Antarctic settings)
+            lighting.FogEnd = 500
+            lighting.FogStart = 0
+            FogRemoved = false
+            Rayfield:Notify({
+                Title = "Fog Restored", 
+                Content = "Default visibility restored",
+                Duration = 2
+            })
         end
     end
 })
 
--- Auto-apply speed and jump when character spawns
+MiscTab:CreateButton({
+    Name = "🔄 Reset Character",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        if player.Character and player.Character:FindFirstChild("Humanoid") then
+            player.Character.Humanoid.Health = 0
+        end
+    end
+})
+
+-- Auto-apply speed and jump when character spawns  
 game.Players.LocalPlayer.CharacterAdded:Connect(function(char)
     wait(1)
     if char:FindFirstChild("Humanoid") then
@@ -317,3 +447,10 @@ game.Players.LocalPlayer.CharacterAdded:Connect(function(char)
         char.Humanoid.JumpPower = CurrentJump
     end
 end)
+
+-- Apply to current character if exists
+local player = game.Players.LocalPlayer
+if player.Character and player.Character:FindFirstChild("Humanoid") then
+    player.Character.Humanoid.WalkSpeed = CurrentSpeed
+    player.Character.Humanoid.JumpPower = CurrentJump
+end
