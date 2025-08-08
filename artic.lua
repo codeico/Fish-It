@@ -6,10 +6,10 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 -- Window Setup
 local Window = Rayfield:CreateWindow({
-   Name = "Expedition Antarctica Script - BANGCODE",
+   Name = "Expedition Antarctica Script +5",
    Icon = 0,
    LoadingTitle = "Welcome",
-   LoadingSubtitle = "by BANGCODE's",
+   LoadingSubtitle = "by Joseph",
    Theme = "Default",
    DisableRayfieldPrompts = false,
    DisableBuildWarnings = false,
@@ -95,11 +95,11 @@ end
 
 -- === UPDATED TELEPORT COORDINATES === --
 local Camps = {
-    ["Camp 1"] = CFrame.new(-4236.6, 0, 723.6),
-    ["Camp 2"] = CFrame.new(1789.7, 0, -137),
-    ["Camp 3"] = CFrame.new(5892.1, 0, -20.3),
-    ["Camp 4"] = CFrame.new(8992.2, 0, 102.6),
-    ["South Pole"] = CFrame.new(11001.9, 0, 103)
+    ["Camp 1"] = CFrame.new(-3730.5, 229.8, 227.5),
+    ["Camp 2"] = CFrame.new(1771.2, 111.8, -126.7),
+    ["Camp 3"] = CFrame.new(5879.2, 327.4, -25.6),
+    ["Camp 4"] = CFrame.new(8978.8, 603.1, 105.8),
+    ["South Pole"] = CFrame.new(10982.1, 555.4, 89.5)
 }
 
 -- === AUTO CHECKPOINT FARM === --
