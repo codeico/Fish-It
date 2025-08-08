@@ -9,7 +9,7 @@ local Window = Rayfield:CreateWindow({
    Name = "Expedition Antarctica Script",
    Icon = 0,
    LoadingTitle = "Welcome",
-   LoadingSubtitle = "by Joseph",
+   LoadingSubtitle = "by BANGCODE",
    Theme = "Default",
    DisableRayfieldPrompts = false,
    DisableBuildWarnings = false,
@@ -137,6 +137,120 @@ for name, cframe in pairs(Camps) do
         end
     })
 end
+
+-- === COORDINATE CHECKER === --
+MainTab:CreateButton({
+    Name = "📍 Get Current Coordinates",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            local pos = player.Character.HumanoidRootPart.Position
+            local cframe = player.Character.HumanoidRootPart.CFrame
+            
+            -- Format coordinates
+            local posStr = string.format("Position: %.1f, %.1f, %.1f", pos.X, pos.Y, pos.Z)
+            local cframeStr = string.format("CFrame.new(%.1f, %.1f, %.1f)", pos.X, pos.Y, pos.Z)
+            
+            -- Print to console
+            print("=== CURRENT COORDINATES ===")
+            print(posStr)
+            print("CFrame: " .. cframeStr)
+            print("Full CFrame: " .. tostring(cframe))
+            print("============================")
+            
+            -- Show notification
+            Rayfield:Notify({
+                Title = "Coordinates Copied",
+                Content = "Check console for full coordinates",
+                Duration = 5
+            })
+            
+            -- Try to copy to clipboard if possible
+            if setclipboard then
+                setclipboard(cframeStr)
+                Rayfield:Notify({
+                    Title = "Copied to Clipboard",
+                    Content = cframeStr,
+                    Duration = 3
+                })
+            end
+        end
+    end
+})
+
+-- === DISTANCE CHECKER === --
+MainTab:CreateButton({
+    Name = "📏 Check Distance to Camps",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            local currentPos = player.Character.HumanoidRootPart.Position
+            
+            print("=== DISTANCES TO CAMPS ===")
+            for name, cframe in pairs(Camps) do
+                local campPos = Vector3.new(cframe.X, cframe.Y, cframe.Z)
+                local distance = (currentPos - campPos).Magnitude
+                print(name .. ": " .. string.format("%.1f", distance) .. " studs")
+            end
+            print("==========================")
+            
+            Rayfield:Notify({
+                Title = "Distance Check",
+                Content = "Check console for distances to all camps",
+                Duration = 3
+            })
+        end
+    end
+})
+
+-- === COORDINATE SAVER === --
+local SavedCoordinates = {}
+
+MainTab:CreateTextBox({
+    Name = "💾 Save Current Position",
+    PlaceholderText = "Enter name for this position",
+    RemoveTextAfterFocusLost = false,
+    Callback = function(Text)
+        local player = game.Players.LocalPlayer
+        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") and Text ~= "" then
+            local pos = player.Character.HumanoidRootPart.Position
+            local cframe = CFrame.new(pos.X, pos.Y, pos.Z)
+            SavedCoordinates[Text] = cframe
+            
+            print("Saved position '" .. Text .. "': " .. string.format("CFrame.new(%.1f, %.1f, %.1f)", pos.X, pos.Y, pos.Z))
+            
+            Rayfield:Notify({
+                Title = "Position Saved",
+                Content = "Saved as: " .. Text,
+                Duration = 3
+            })
+        end
+    end
+})
+
+-- === TELEPORT TO SAVED COORDINATES === --
+MainTab:CreateDropdown({
+    Name = "🎯 Teleport to Saved Position",
+    Options = {},
+    CurrentOption = "",
+    Flag = "SavedPositions",
+    Callback = function(Option)
+        if SavedCoordinates[Option] then
+            local char = game.Players.LocalPlayer.Character
+            if char and char:FindFirstChild("HumanoidRootPart") then
+                char.HumanoidRootPart.CFrame = SavedCoordinates[Option]
+                Rayfield:Notify({
+                    Title = "Teleported",
+                    Content = "Moved to: " .. Option,
+                    Duration = 2
+                })
+            end
+        end
+    end
+})
+
+-- === COORDINATE TOOLS SECTION === --
+local CoordSection = MainTab:CreateSection("📍 Coordinate Tools")
 
 -- === CHECKPOINT INFO === --
 MainTab:CreateButton({
